@@ -1,0 +1,10 @@
+{
+  "name": "DragonBoatProject",
+  "uuid": "e57e834c-60fc-48ec-b858-a7482844d940",
+  "creator": {
+    "version": "3.8.7"
+  },
+  "dependencies": {
+    "tsrpc-browser": "^3.4.18"
+  }
+}
