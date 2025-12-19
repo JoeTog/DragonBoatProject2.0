@@ -31,7 +31,9 @@ export class Popmanager extends Component {
         if (prefab_url == PREFAB_PATH_ENUM.BagPrefab || prefab_url == PREFAB_PATH_ENUM.ShopPrefab
             || prefab_url == PREFAB_PATH_ENUM.UIUserInfo || prefab_url == PREFAB_PATH_ENUM.MyTask) {
             loadingManager.showLoadingImmediately();
-        }else if(prefab_url == PREFAB_PATH_ENUM.SystemAnnouncement || prefab_url == PREFAB_PATH_ENUM.PickUpReward){
+        }else if(prefab_url == PREFAB_PATH_ENUM.SystemAnnouncement || prefab_url == PREFAB_PATH_ENUM.PickUpReward
+            || prefab_url == PREFAB_PATH_ENUM.Setting
+        ){
             //不显示加载
         }else{
             loadingManager.showLoading();

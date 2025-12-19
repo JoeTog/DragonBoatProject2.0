@@ -59,14 +59,14 @@ export class RoleRender extends Component {
         //         effectsVolume:0.3
         //     };
         //     sys.localStorage.setItem(
-        //         LocalStorageKey.PersonalConfig,
+        //         LocalStorageKey.PersonalConfig + `_${UserDataManager.Instance.UserInfo.uid}`,
         //         JSON.stringify(personalInfo)
         //     );
         // });
 
         // const Spritesec = this.node.getChildByName('Spritesec');
         // UIButtonUtil.initBtn(Spritesec, () => {
-        //     let PersonalConfig:IPlayerSetInfo = sys.localStorage.getItem(LocalStorageKey.PersonalConfig);
+        //     let PersonalConfig:IPlayerSetInfo = sys.localStorage.getItem(LocalStorageKey.PersonalConfig + `_${UserDataManager.Instance.UserInfo.uid}`);
         //     console.log('PersonalConfig = ',PersonalConfig);
         // });
 

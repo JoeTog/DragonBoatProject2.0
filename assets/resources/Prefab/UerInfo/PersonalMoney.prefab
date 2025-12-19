@@ -103,7 +103,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 762,
-      "y": 325,
+      "y": 324.99999999999994,
       "z": 0
     },
     "_lrot": {
@@ -2547,7 +2547,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1624,
-      "height": 750
+      "height": 749.9999999999999
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2622,6 +2622,9 @@
     },
     "pointNode": {
       "__id__": 9
+    },
+    "settingNode": {
+      "__id__": 3
     },
     "powerText": {
       "__id__": 88

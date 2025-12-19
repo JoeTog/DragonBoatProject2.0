@@ -1,4 +1,4 @@
-import { _decorator, Component, instantiate, Node, Prefab, utils } from 'cc';
+import { _decorator, Component, instantiate, Node, Prefab, sys, utils } from 'cc';
 import { TsRpc } from './Net/TsRpc';
 import { ToastManager } from './Prefab/UI/ToastManager';
 import UserDataManager from './Data/UserDataManager';
@@ -6,12 +6,14 @@ import { TsrpcError } from 'tsrpc-browser';
 import { getUrlParam, resAssetLoad } from './Base/Utils';
 import GameConfig from './Config/GameConfig';
 import { TeamInfoManager } from './Data/TeamInfoManager';
-import { EVENT_ENUM, MUSIC_PATH_ENUM } from './Data/Enum';
+import { EVENT_ENUM, IPlayerSetInfo, LocalStorageKey, MUSIC_PATH_ENUM } from './Data/Enum';
 import EventManager from './Base/EventManager';
 import { AudioManager } from './Base/AudioManager';
 import { loadingManager } from './Prefab/UI/LoadingManager';
 import { HomeManager } from './Prefab/Home/HomeManager';
 import { GameDataManager } from './Data/GameDatamanager';
+import ConfigManager from './Base/ConfigManager';
+import { AudioBGMManager } from './Base/AudioBGMManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('Start')
@@ -33,6 +35,8 @@ export class Start extends Component {
 
         loadingManager.showLoading();
 
+
+
         try {
             //加载spine动画 资源加载中
             // await resAssetLoad<Prefab>("Prefab/UI/Loading", Prefab).then(prefab => {
@@ -42,12 +46,9 @@ export class Start extends Component {
             //     console.warn('加载 Loading 预制体失败:', err);
             // });
 
-            //播放背景音乐
-            AudioManager.Instance.play(MUSIC_PATH_ENUM.bgFight,0.3).catch(err => {
-                console.warn('播放背景音乐失败:', err);
-            });
-
             await this.doLogin();
+            this.logined();
+
         } catch (error) {
             console.error('Start 初始化失败:', error);
             ToastManager.showToast('初始化失败，请刷新页面重试', error);
@@ -55,6 +56,17 @@ export class Start extends Component {
 
     }
 
+    logined() {
+        const savedData = sys.localStorage.getItem(LocalStorageKey.PersonalConfig + `_${UserDataManager.Instance.UserInfo.uid}`);
+        const personalSetting = savedData ? JSON.parse(savedData) : this.getDefaultSettings();
+        ConfigManager.Instance.personalSetting = personalSetting;
+
+        //播放背景音乐
+        AudioBGMManager.Instance.play(MUSIC_PATH_ENUM.bgFight, ConfigManager.Instance.personalSetting.musicBGMVolume).catch(err => {
+            console.warn('播放背景音乐失败:', err);
+        });
+
+    }
 
     private async doLogin() {
         //获取网址中的参数
@@ -124,10 +136,10 @@ export class Start extends Component {
         if (teamData.res.teamId > 0 && teamData.res.roomId > 0) {
             //游戏中
             // 表示在游戏中,请求获取队伍信息，直接进入
-            const teamInfo = await TsRpc.Instance.Client.callApi("team/GetTeamInfo", { __ssoToken: UserDataManager.Instance.SsoToken});
+            const teamInfo = await TsRpc.Instance.Client.callApi("team/GetTeamInfo", { __ssoToken: UserDataManager.Instance.SsoToken });
             TeamInfoManager.Instance.TeamInfo = teamInfo.res.info
-            const pk_info = await TsRpc.Instance.Client.callApi("room/GetRoomInfo", { __ssoToken: UserDataManager.Instance.SsoToken});
-            GameDataManager.Instance.restoreGame(pk_info.res.roomIndex, pk_info.res.info, userData.res.gameItems, pk_info.res.currentTask?.status,pk_info.res?.currentTask);
+            const pk_info = await TsRpc.Instance.Client.callApi("room/GetRoomInfo", { __ssoToken: UserDataManager.Instance.SsoToken });
+            GameDataManager.Instance.restoreGame(pk_info.res.roomIndex, pk_info.res.info, userData.res.gameItems, pk_info.res.currentTask?.status, pk_info.res?.currentTask);
 
         } else if (teamData.res.teamId > 0) {
             //有队伍
@@ -201,6 +213,22 @@ export class Start extends Component {
             console.error('【重新登录异常】', error);
             ToastManager.showToast("重新登录失败，请刷新页面");
         }
+    }
+
+    private getDefaultSettings(): IPlayerSetInfo {
+        sys.localStorage.setItem(
+            LocalStorageKey.PersonalConfig + `_${UserDataManager.Instance.UserInfo.uid}`,
+            JSON.stringify({
+                userId: UserDataManager.Instance.UserInfo.uid,
+                musicBGMVolume: 0.3,
+                soundEffectsVolume: 0.3
+            })
+        );
+        return {
+            userId: UserDataManager.Instance.UserInfo.uid,
+            musicBGMVolume: 0.3,
+            soundEffectsVolume: 0.3
+        };
     }
 
     update(deltaTime: number) {

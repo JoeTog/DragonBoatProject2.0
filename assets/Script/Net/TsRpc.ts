@@ -5,6 +5,7 @@ import { WsConfig } from '../Config';
 import Listenmsgmanager from './Listenmsgmanager';
 import EventManager from '../Base/EventManager';
 import { EVENT_ENUM } from '../Data/Enum';
+import { JoeFunc } from '../Base/JoeFunc';
 
 
 
@@ -35,7 +36,7 @@ export class TsRpc extends Singleton {
         }
         this.clientService = new WsClient(serviceProto, WsConfig)
 
-        this.clientService.flows.preApiReturnFlow.push(v => {
+        this.clientService.flows.preApiReturnFlow.push(async v => {
             // 打印所有 API 返回消息
             // console.log('【API返回】', {
             //     api: v.apiName || 'unknown',
@@ -58,6 +59,7 @@ export class TsRpc extends Singleton {
                     v.return.err.needLogin) {
                     console.warn('【登录失效】需要重新登录:', errorMessage);
                     // 触发重连成功回调，重新登录
+                    await JoeFunc.delay(2000);
                     if (this._onReconnectCallback) {
                         this._onReconnectCallback();
                     }

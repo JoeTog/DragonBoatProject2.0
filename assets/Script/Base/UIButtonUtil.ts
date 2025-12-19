@@ -1,6 +1,7 @@
 import { _decorator, Component, Node, tween, Vec3, EventTouch } from 'cc';
 import { MUSIC_PATH_ENUM } from '../Data/Enum';
 import { AudioManager } from './AudioManager';
+import ConfigManager from './ConfigManager';
 
 export class UIButtonUtil {
     /** 默认冷却时间 */
@@ -142,7 +143,7 @@ export class UIButtonUtil {
 
     private static clickUpTween(node: Node, callback?: () => void): void {
         // 只有在非冷却状态且确实被按下的情况下才播放音效
-        AudioManager.Instance.playOneShot(MUSIC_PATH_ENUM.BtnClick)        
+        AudioManager.Instance.playOneShot(MUSIC_PATH_ENUM.BtnClick,ConfigManager.Instance.personalSetting.soundEffectsVolume)        
         tween(node)
             .to(0.1, { scale: new Vec3(1, 1, 1) })
             .call(() => {

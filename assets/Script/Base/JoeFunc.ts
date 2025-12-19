@@ -3,7 +3,7 @@
 
 
 export class JoeFunc {
-    
+
 
     // 复制文本到剪贴板
     public static copyToClipboard(text: string): boolean {
@@ -30,7 +30,9 @@ export class JoeFunc {
         }
     }
 
-
+    public static delay(ms: number): Promise<void> {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
 
 
 

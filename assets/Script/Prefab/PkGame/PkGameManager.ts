@@ -4,6 +4,8 @@ import { GameDataManager } from '../../Data/GameDatamanager';
 import { randomFloor } from '../../Base/Utils';
 import EventManager from '../../Base/EventManager';
 import { AudioManager } from '../../Base/AudioManager';
+import ConfigManager from '../../Base/ConfigManager';
+import { AudioBGMManager } from '../../Base/AudioBGMManager';
 const { ccclass, property } = _decorator;
 
 //定义龙舟动画状态：停止、慢速、快速
@@ -116,7 +118,7 @@ export class PkGameManager extends Component {
     doSender() {
 
         //播放背景音乐
-        AudioManager.Instance.play(MUSIC_PATH_ENUM.game_bg).catch(err => {
+        AudioBGMManager.Instance.play(MUSIC_PATH_ENUM.game_bg,ConfigManager.Instance.personalSetting.musicBGMVolume).catch(err => {
             console.warn('播放游戏中背景音乐失败:', err);
         });
 

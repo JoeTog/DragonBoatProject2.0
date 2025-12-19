@@ -6,6 +6,8 @@ import { SingleUIRender } from './SingleUIRender';
 import { SingleOperatorRender } from './SingleOperatorRender';
 import { randomFloor } from '../../../Base/Utils';
 import { loadingManager } from '../../UI/LoadingManager';
+import ConfigManager from '../../../Base/ConfigManager';
+import { AudioBGMManager } from '../../../Base/AudioBGMManager';
 const { ccclass, property } = _decorator;
 
 //定义龙舟动画状态：停止、慢速、快速
@@ -75,7 +77,7 @@ export class doSender extends Component {
 
     doSender() {
         //播放背景音乐
-        AudioManager.Instance.play(MUSIC_PATH_ENUM.game_bg).catch(err => {
+        AudioBGMManager.Instance.play(MUSIC_PATH_ENUM.game_bg,ConfigManager.Instance.personalSetting.musicBGMVolume).catch(err => {
             console.warn('播放游戏中背景音乐失败:', err);
         });
 
@@ -144,7 +146,7 @@ export class doSender extends Component {
     hide() {
 
         //播放背景音乐
-        AudioManager.Instance.play(MUSIC_PATH_ENUM.bgFight).catch(err => {
+        AudioBGMManager.Instance.play(MUSIC_PATH_ENUM.bgFight,ConfigManager.Instance.personalSetting.musicBGMVolume).catch(err => {
             console.warn('播放背景音乐失败:', err);
         });
 

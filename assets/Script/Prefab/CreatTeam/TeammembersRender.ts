@@ -229,6 +229,7 @@ export class TeammembersRender extends Component {
 
         const dzNode = Root?.getChildByName('capitainBg');
         const dyNode = Root?.getChildByName('memberBg');
+        const meBgNode = Root?.getChildByName('meBg');
         const disableBtnNode = memberItemLocal.getChildByName('close');
 
         if (disableNode) {
@@ -312,6 +313,11 @@ export class TeammembersRender extends Component {
                 disableBtnNode.active = true;
             } else {
                 disableBtnNode.active = false;
+            }
+        }
+        if (meBgNode) {
+            if ( member.uid == UserDataManager.Instance.UserInfo.uid) {
+                meBgNode.active = true;
             }
         }
 

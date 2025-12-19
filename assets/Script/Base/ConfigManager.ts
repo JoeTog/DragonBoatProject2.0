@@ -1,3 +1,4 @@
+import { IPlayerSetInfo } from "../Data/Enum";
 import { TaskMessageDto } from "../Net/Shared/protocols/user/PtlGetTaskMessages";
 import Singleton from "./Singleton";
 interface IItem {
@@ -16,16 +17,18 @@ export default class ConfigManager extends Singleton {
     private _systemInfo: string[] = []; // 公告信息
     private _introduction: string[] = []; // 游戏说明信息
     private _messageArr: TaskMessageDto[] = []; // 游戏系统信息
+    private _personalSetting: IPlayerSetInfo = null;
+
+
+
+
+    public get personalSetting(): IPlayerSetInfo {
+        return this._personalSetting;
+    }
+    public set personalSetting(value: IPlayerSetInfo) {
+        this._personalSetting = value;
+    }
     
-
-
-
-
-
-
-
-
-
     public get systemInfo(): string[] {
         return this._systemInfo;
     }
@@ -48,7 +51,7 @@ export default class ConfigManager extends Singleton {
 
 
 
-    
+
 
 
 }

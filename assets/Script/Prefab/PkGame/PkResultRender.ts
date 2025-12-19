@@ -11,6 +11,8 @@ import { TsrpcError } from 'tsrpc-browser';
 import { TsRpc } from '../../Net/TsRpc';
 import { ToastManager } from '../UI/ToastManager';
 import { PopViewManager } from '../UI/Notice/PopViewManager';
+import ConfigManager from '../../Base/ConfigManager';
+import { AudioBGMManager } from '../../Base/AudioBGMManager';
 const { ccclass, property } = _decorator;
 
 
@@ -53,7 +55,7 @@ export class PkGameRender extends Component {
 
             EventManager.Instance.emit(EVENT_ENUM.HidePkGame);
             //播放背景音乐
-            AudioManager.Instance.play(MUSIC_PATH_ENUM.bgFight).catch(err => {
+            AudioBGMManager.Instance.play(MUSIC_PATH_ENUM.bgFight,ConfigManager.Instance.personalSetting.musicBGMVolume).catch(err => {
                 console.warn('播放背景音乐失败:', err);
             });
 
@@ -130,7 +132,7 @@ export class PkGameRender extends Component {
                         GameDataManager.Instance._reset();
                         EventManager.Instance.emit(EVENT_ENUM.HidePkGame);
                         //播放背景音乐
-                        AudioManager.Instance.play(MUSIC_PATH_ENUM.bgFight).catch(err => {
+                        AudioBGMManager.Instance.play(MUSIC_PATH_ENUM.bgFight,ConfigManager.Instance.personalSetting.musicBGMVolume).catch(err => {
                             console.warn('播放背景音乐失败:', err);
                         });
                     }, 2);

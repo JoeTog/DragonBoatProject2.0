@@ -80,7 +80,8 @@ export enum PREFAB_PATH_ENUM {
     SystemMessage = "Prefab/UI/systemMessage/SystemMessage",
     SystemAnnouncement = "Prefab/UI/SystemAnnouncement/SystemAnnouncement",
     MyTask = "Prefab/Task/MyTask",
-    PickUpReward = "Prefab/Task/pickupReward/PickUpReward"
+    PickUpReward = "Prefab/Task/pickupReward/PickUpReward",
+    Setting = "Prefab/UI/setting/Setting"
 
     //
     
@@ -182,8 +183,8 @@ export enum LocalStorageKey {
 /** 玩家设置 */
 export interface IPlayerSetInfo {
     userId: number,
-    musicVolume: number,
-    effectsVolume:number
+    musicBGMVolume: number,
+    soundEffectsVolume:number
 }
 
 /** getOrUse pop展示类型 */

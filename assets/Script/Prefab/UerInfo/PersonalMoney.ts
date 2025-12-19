@@ -23,6 +23,8 @@ export class PersonalMoney extends Component {
     djNode: Node = null;
     @property(Node)
     pointNode: Node = null;
+    @property(Node)
+    settingNode: Node = null;
 
     @property(Node)
     powerText: Node = null;
@@ -30,6 +32,7 @@ export class PersonalMoney extends Component {
     djText: Node = null;
     @property(Node)
     pointText: Node = null;
+
 
     //是否显示描述文字
     public IsShow: boolean = true;
@@ -58,6 +61,15 @@ export class PersonalMoney extends Component {
             //
             EventManager.Instance.emit(EVENT_ENUM.RenderHomePop, {
                 prefab_url: PREFAB_PATH_ENUM.DjExchangePrefab,
+                source: popType.null
+            });
+
+        });
+
+        UIButtonUtil.initBtn(this.settingNode, () => {
+            //
+            EventManager.Instance.emit(EVENT_ENUM.RenderHomePop, {
+                prefab_url: PREFAB_PATH_ENUM.Setting,
                 source: popType.null
             });
 

@@ -198,7 +198,7 @@ export interface ServiceType {
 }
 
 export const serviceProto: ServiceProto<ServiceType> = {
-    "version": 14,
+    "version": 15,
     "services": [
         {
             "id": 0,
@@ -1722,6 +1722,22 @@ export const serviceProto: ServiceProto<ServiceType> = {
                     "name": "player_code",
                     "type": {
                         "type": "String"
+                    },
+                    "optional": true
+                },
+                {
+                    "id": 20,
+                    "name": "total_exchanged_points",
+                    "type": {
+                        "type": "Number"
+                    },
+                    "optional": true
+                },
+                {
+                    "id": 21,
+                    "name": "first_10k_reward_claimed",
+                    "type": {
+                        "type": "Number"
                     },
                     "optional": true
                 }

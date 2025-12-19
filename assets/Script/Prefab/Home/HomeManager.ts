@@ -10,6 +10,8 @@ import { ToastManager } from '../../Prefab/UI/ToastManager';
 import { AudioManager } from '../../Base/AudioManager';
 import { NetManager, NetworkQualityChangePayload } from '../../Net/NetManager';
 import EventManager from '../../Base/EventManager';
+import ConfigManager from '../../Base/ConfigManager';
+import { Setting } from '../UI/Setting/Setting';
 
 const { ccclass, property } = _decorator;
 
@@ -75,6 +77,8 @@ export class HomeManager extends Component {
         EventManager.Instance.on(EVENT_ENUM.RequestUserInfo, this.upupdateUserInfo, this);
         // EventManager.Instance.on(EVENT_ENUM.WssInited, this.wssInited, this);
 
+        // 使用前
+        Setting.Instance.init();
         this.scheduleNextRippleSound();
 
 
@@ -158,7 +162,7 @@ export class HomeManager extends Component {
 
 
     private triggerRippleSound(): void {
-        AudioManager.Instance.playOneShot(MUSIC_PATH_ENUM.eft_suihua).catch((err) => {
+        AudioManager.Instance.playOneShot(MUSIC_PATH_ENUM.eft_suihua,ConfigManager.Instance.personalSetting.soundEffectsVolume).catch((err) => {
             console.warn('[HomeManager] 播放水花音效失败', err);
         });
         this.scheduleNextRippleSound();

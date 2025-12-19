@@ -101,6 +101,10 @@ export interface IPlayer {
     freezePower?: number;
     /**玩家编码（首字母a-z，后5位数字，唯一）*/
     player_code?: string;
+    /**累积兑换的点券总数 */
+    total_exchanged_points?: number;
+    /**是否已领取首次1万点券奖励(0=未领取,1=已领取) */
+    first_10k_reward_claimed?: number;
 }
 
 export interface ITeamBase {

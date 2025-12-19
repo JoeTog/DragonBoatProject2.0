@@ -27,7 +27,8 @@ export class pickUpRewardManager extends Component {
 
     public rewardDataList: IShopItem[] = [];
 
-    private chosedItem:IShopItem = null;
+    private chosedItem: IShopItem = null;
+    private chosedNode: Node = null;
 
 
     protected onLoad(): void {
@@ -39,7 +40,7 @@ export class pickUpRewardManager extends Component {
 
     }
 
-    doUI(){
+    doUI() {
 
         UIButtonUtil.initBtn(this.popBtn, () => {
             this.node.destroy();
@@ -91,14 +92,20 @@ export class pickUpRewardManager extends Component {
             dailyTaskItemManager.desContentV.destroyAllChildren();
             dailyTaskItemManager.desContentV.addChild(infoNode);
             this.pickupRewardContentV.addChild(pickupRewardCell);
+            const chosed = pickupRewardCell.getChildByName('detail').getChildByName('chosedNode');
             //选择奖励
-            UIButtonUtil.initBtn(pickupRewardCell,()=>{
+            UIButtonUtil.initBtn(pickupRewardCell, () => {
+                if (this.chosedNode) {
+                    this.chosedNode.active = false;
+                }
+                chosed.active = true;
+                this.chosedNode = chosed;
                 this.chooseReward(element);
             });
         }
     }
 
-    chooseReward(shopItem:IShopItem){
+    chooseReward(shopItem: IShopItem) {
         this.pickupActionBtn.active = true;
         this.chosedItem = shopItem;
         this.chooseRewardTextSHow.string = `您已选择【${shopItem.name}】`;
