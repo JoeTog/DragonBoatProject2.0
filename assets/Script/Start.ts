@@ -50,7 +50,7 @@ export class Start extends Component {
             this.logined();
 
         } catch (error) {
-            console.error('Start 初始化失败:', error);
+            console.error('Start 初始化失败:：：：', error);
             ToastManager.showToast('初始化失败，请刷新页面重试', error);
         }
 
