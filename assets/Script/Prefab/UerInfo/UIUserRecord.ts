@@ -5,7 +5,7 @@ import { TsRpc } from '../../Net/TsRpc';
 import UserDataManager from '../../Data/UserDataManager';
 import { ResGetPowerRecord } from '../../Net/Shared/protocols/user/PtlGetPowerRecord';
 import { BigNumUtils, loadAvatar, resAssetLoad, TimeDateUtils } from '../../Base/Utils';
-import { EVENT_ENUM, powerRecordType, UnfreezeStatus, popType } from '../../Data/Enum';
+import { EVENT_ENUM, powerRecordType, UnfreezeStatus } from '../../Data/Enum';
 import EventManager from '../../Base/EventManager';
 import { ResUnfreezePowerRecord } from '../../Net/Shared/protocols/user/PtlUnfreezePowerRecord';
 import { ToastManager } from '../UI/ToastManager';
@@ -15,6 +15,12 @@ import { BAG_CONFIG, IMG_URL_EXTRA_PARAM } from '../../Config';
 import { JoeFunc } from '../../Base/JoeFunc';
 
 
+enum RecordType {
+    /** 个人比赛记录 */
+    personalGameRecord,
+    /** 武力值记录 */
+    powerRecord,
+}
 
 const { ccclass, property } = _decorator;
 
@@ -43,7 +49,9 @@ export class UIUserRecord extends Component {
     @property(Node)
     historyPowerUnChosed: Node = null;
 
-    public recordType: popType = popType.null;
+    
+    //为了分页功能
+    public recordType: RecordType = RecordType.personalGameRecord;
 
     private popNode: Node = null;
     private closeNode: Node = null;
@@ -93,11 +101,8 @@ export class UIUserRecord extends Component {
 
         this.historyGameChosed.active = true;
         this.historyPowerUnChosed.active = true;
-        if (this.recordType == popType.personalGameRecord) {
-            this.doRenderPersonalGameR();
-        } else if (this.recordType == popType.powerRecord) {
-            
-        }
+
+        this.doRenderPersonalGameR();
 
 
         UIButtonUtil.initBtn(this.historyGameUnChosed, () => {
@@ -105,6 +110,7 @@ export class UIUserRecord extends Component {
             this.historyGameUnChosed.active = false;
             this.historyPowerChosed.active = false;
             this.historyPowerUnChosed.active = true;
+            this.recordType = RecordType.personalGameRecord;
             this.doRenderPersonalGameR();
         });
         UIButtonUtil.initBtn(this.historyPowerUnChosed, () => {
@@ -112,6 +118,7 @@ export class UIUserRecord extends Component {
             this.historyGameUnChosed.active = true;
             this.historyPowerChosed.active = true;
             this.historyPowerUnChosed.active = false;
+            this.recordType = RecordType.powerRecord;
             this.doRenderPowerRecord();
         });
 
@@ -168,12 +175,7 @@ export class UIUserRecord extends Component {
         rateValueLabel.string = winnum.toFixed(2) + "%";
         powerValueLabel.string = BigNumUtils.getNumberStringWan(power);
 
-
-
-
     }
-
-
 
     //武力值记录 item
     doSenderOnePowerRecord(recordItem: PowerRecordItemData) {
@@ -212,9 +214,9 @@ export class UIUserRecord extends Component {
     private onScrollToBottom() {
         if (!this.hasMorePowerRecord) return;
 
-        if (this.recordType == popType.personalGameRecord) {
+        if (this.recordType == RecordType.personalGameRecord) {
 
-        } else if (this.recordType == popType.powerRecord) {
+        } else if (this.recordType == RecordType.powerRecord) {
             this.loadMorePowerRecord();
         }
 

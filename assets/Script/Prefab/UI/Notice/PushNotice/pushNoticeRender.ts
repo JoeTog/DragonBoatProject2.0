@@ -65,7 +65,7 @@ export class pushNoticeRender extends Component {
                         .split(/\r?\n+/)        // 按换行拆分
                         .map(s => s.trim())
                         .filter(Boolean);
-                    ConfigManager.Instance.systemInfo = gonggaoArr;
+                    ConfigManager.Instance.announcement = gonggaoArr;
                     ConfigManager.Instance.introduction = shuomingArr;
         }
 

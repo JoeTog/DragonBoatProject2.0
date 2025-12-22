@@ -77,9 +77,7 @@ export class HomeManager extends Component {
         EventManager.Instance.on(EVENT_ENUM.RequestUserInfo, this.upupdateUserInfo, this);
         // EventManager.Instance.on(EVENT_ENUM.WssInited, this.wssInited, this);
 
-        // 使用前
-        Setting.Instance.init();
-        this.scheduleNextRippleSound();
+
 
 
         // if (this.zhanshiPrefab) {
@@ -94,7 +92,6 @@ export class HomeManager extends Component {
         // }
 
     }
-
 
     //ws初始化完成，收到通知
     // wssInited() {
@@ -159,44 +156,17 @@ export class HomeManager extends Component {
         }
     }
 
-
-
-    private triggerRippleSound(): void {
-        AudioManager.Instance.playOneShot(MUSIC_PATH_ENUM.eft_suihua,ConfigManager.Instance.personalSetting.soundEffectsVolume).catch((err) => {
-            console.warn('[HomeManager] 播放水花音效失败', err);
-        });
-        this.scheduleNextRippleSound();
-    }
-
-    private scheduleNextRippleSound(): void {
-        this.unschedule(this.triggerRippleSound);
-        const delay = 1 + Math.random() * 5; // 3-5 秒
-        this.scheduleOnce(this.triggerRippleSound, delay);
-    }
-
-
-    protected onDestroy(): void {
-        //页面销毁 销毁监听 
-        EventManager.Instance.off(EVENT_ENUM.ShowHome, this.showHome, this);
-        EventManager.Instance.off(EVENT_ENUM.HideHome, this.hideHome, this);
-        EventManager.Instance.off(EVENT_ENUM.ToCreateTeam, this.createTeam, this);
-        EventManager.Instance.off(EVENT_ENUM.RequestUserInfo, this.upupdateUserInfo, this);
-        // EventManager.Instance.off(EVENT_ENUM.WssInited, this.wssInited, this);
-        this.unschedule(this.triggerRippleSound);
-        this.unschedule(this.playNextSpineAnimation);
-    }
-
-    hideHome() {
-        this.node.destroyAllChildren();
-    }
-
-
     //展示home 并且需不需要刷新用户信息 默认需要
     async showHome(needGetUserInfo: boolean = false) {
         if (this.node.children.length > 0) {
             return;
         }
         try {
+
+            // 使用前
+            Setting.Instance.init();
+            this.scheduleNextRippleSound();
+
             if (needGetUserInfo) {
                 // console.trace('当前调用栈');
                 if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
@@ -236,7 +206,7 @@ export class HomeManager extends Component {
         //初始化用户信息usercard 预制体
         const usercardNode = instantiate(this.usercard);
         this.node.addChild(usercardNode);
-        
+
         //个人武力值、点卷、积分
         const personalMoney = instantiate(this.PersonalMoney);
         this.node.addChild(personalMoney);
@@ -265,6 +235,39 @@ export class HomeManager extends Component {
         });
         loadingManager.hideLoading();
     }
+
+
+
+
+    private triggerRippleSound(): void {
+        AudioManager.Instance.playOneShot(MUSIC_PATH_ENUM.eft_suihua, ConfigManager.Instance.personalSetting.soundEffectsVolume).catch((err) => {
+            console.warn('[HomeManager] 播放水花音效失败', err);
+        });
+        this.scheduleNextRippleSound();
+    }
+
+    private scheduleNextRippleSound(): void {
+        this.unschedule(this.triggerRippleSound);
+        const delay = 1 + Math.random() * 5; // 3-5 秒
+        this.scheduleOnce(this.triggerRippleSound, delay);
+    }
+
+
+    protected onDestroy(): void {
+        //页面销毁 销毁监听 
+        EventManager.Instance.off(EVENT_ENUM.ShowHome, this.showHome, this);
+        EventManager.Instance.off(EVENT_ENUM.HideHome, this.hideHome, this);
+        EventManager.Instance.off(EVENT_ENUM.ToCreateTeam, this.createTeam, this);
+        EventManager.Instance.off(EVENT_ENUM.RequestUserInfo, this.upupdateUserInfo, this);
+        // EventManager.Instance.off(EVENT_ENUM.WssInited, this.wssInited, this);
+        this.unschedule(this.triggerRippleSound);
+        this.unschedule(this.playNextSpineAnimation);
+    }
+
+    hideHome() {
+        this.node.destroyAllChildren();
+    }
+
 
     //检查是否维护中
     async CheckMaintenance(): Promise<boolean> {

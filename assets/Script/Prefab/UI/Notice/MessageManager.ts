@@ -1,5 +1,5 @@
 import { _decorator, Component, instantiate, Label, Node, Prefab, Sprite, SpriteFrame } from 'cc';
-import { EVENT_ENUM, showType, systemMessageType } from '../../../Data/Enum';
+import { EVENT_ENUM, systemMessageType } from '../../../Data/Enum';
 import { UIButtonUtil } from '../../../Base/UIButtonUtil';
 import ConfigManager from '../../../Base/ConfigManager';
 import { TaskMessageDto } from '../../../Net/Shared/protocols/user/PtlGetTaskMessages';
@@ -35,7 +35,6 @@ export class MessageManager extends Component {
     private isRequestReaded: boolean = false;
 
     //显示什么
-    // public showType: showType = showType.Gonggao;
 
 
 
@@ -97,19 +96,7 @@ export class MessageManager extends Component {
             });
             this.messageListContentV.addChild(messageListCell);
         }
-
-
-        // let data = ConfigManager.Instance.systemInfo;
-        // if (this.showType == showType.Gonggao) {
-        // } else if (this.showType == showType.Introduction) {
-        //     data = ConfigManager.Instance.introduction;
-        // }
-        // for (let i = 0; i < data.length; i++) {
-        //     const node = instantiate(this.labelPrefab);
-        //     node.getComponent(Label).string = data[i];
-        //     this.contentNode.addChild(node);
-        // }
-        // this.GonggaoNode.active = true;
+        
     }
 
     doListCellChosedShow(cell: Node, item: TaskMessageDto) {

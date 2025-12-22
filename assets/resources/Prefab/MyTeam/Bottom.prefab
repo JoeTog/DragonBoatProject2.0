@@ -1160,6 +1160,10 @@
     "__prefab": {
       "__id__": 51
     },
+    "popViewPrefab": {
+      "__uuid__": "fbe1f1fc-810d-4296-9539-806a95bb0fbe",
+      "__expectedType__": "cc.Prefab"
+    },
     "matchBtn": {
       "__id__": 22
     },

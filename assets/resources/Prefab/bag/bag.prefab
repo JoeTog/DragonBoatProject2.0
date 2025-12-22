@@ -4490,7 +4490,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 180,
+      "width": 60,
       "height": 75.6
     },
     "_anchorPoint": {
@@ -4526,7 +4526,7 @@
       "b": 96,
       "a": 255
     },
-    "_string": "旗鼓手",
+    "_string": "空",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 60,

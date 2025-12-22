@@ -2,7 +2,7 @@ import { _decorator, Component, instantiate, Label, Node, Prefab } from 'cc';
 import EventManager from '../../../Base/EventManager';
 import ConfigManager from '../../../Base/ConfigManager';
 import { UIButtonUtil } from '../../../Base/UIButtonUtil';
-import { showType } from '../../../Data/Enum';
+import { NoticesType } from '../../../Data/Enum';
 
 const { ccclass, property } = _decorator;
 
@@ -15,7 +15,7 @@ export class GonggaoManager extends Component {
     labelPrefab: Prefab = null;
 
     //显示什么
-    public showType: showType = showType.Gonggao;
+    public noticesType: NoticesType = NoticesType.Gonggao;
 
 
     private contentNode: Node = null;
@@ -28,9 +28,9 @@ export class GonggaoManager extends Component {
         this.contentNode = popNode.getChildByName('bg').getChildByName('detailScrollV').getChildByName('view').getChildByName('content');
         this.titleLabel = popNode.getChildByName('bg').getChildByName('title').getComponent(Label);
         // EventManager.Instance.on("ShowGonggao", this.showGonggao, this)
-        if (this.showType == showType.Gonggao) {
+        if (this.noticesType == NoticesType.Gonggao) {
             this.titleLabel.string = '游戏公告'
-        } else if (this.showType == showType.Introduction) {
+        } else if (this.noticesType == NoticesType.Introduction) {
             this.titleLabel.string = '游戏说明'
         }
         const closeNode = this.node.getChildByName('close');
@@ -41,9 +41,9 @@ export class GonggaoManager extends Component {
     }
 
     showGonggao() {
-        let data = ConfigManager.Instance.systemInfo;
-        if (this.showType == showType.Gonggao) {
-        } else if (this.showType == showType.Introduction) {
+        let data = ConfigManager.Instance.announcement;
+        if (this.noticesType == NoticesType.Gonggao) {
+        } else if (this.noticesType == NoticesType.Introduction) {
             data = ConfigManager.Instance.introduction;
         }
         for (let i = 0; i < data.length; i++) {

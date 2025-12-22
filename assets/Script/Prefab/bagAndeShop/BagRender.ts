@@ -95,10 +95,10 @@ export class BagRender extends Component {
             this.node.destroy();
         });
 
-        this.maskNode = this.popNode.getChildByName('mask');
-        UIButtonUtil.initBtn(this.maskNode, () => {
-            this.hideMask();
-        });
+        // this.maskNode = this.popNode.getChildByName('mask');
+        // UIButtonUtil.initBtn(this.maskNode, () => {
+        //     this.hideMask();
+        // });
 
         this.scrollView = this.containNode.parent.parent.getComponent(ScrollView);
         this.scrollView.enabled = false;
@@ -118,12 +118,20 @@ export class BagRender extends Component {
 
     }
 
-
+    async getUserInfoOfBag() {
+        const userData = await TsRpc.Instance.Client.callApi('user/GetInfo', { __ssoToken: UserDataManager.Instance.SsoToken });
+        const userInfo = userData.res.info;
+        UserDataManager.Instance.UserInfo = userInfo;
+        return userInfo.bag_data;
+    }
 
     //是否来自使用，使用的话 需要选中为使用的道具 coun>0
-    doRender(isFromUse: boolean = false) {
+    async doRender(isFromUse: boolean = false) {
         this.containNode.destroyAllChildren();
-        this.bagDataList = UserDataManager.Instance.BagData;
+
+        this.bagDataList = await this.getUserInfoOfBag();
+
+
         this.popNode.active = true;
         let userBagData = [];
         for (let index = 0; index < this.bagDataList.length; index++) {
@@ -135,10 +143,13 @@ export class BagRender extends Component {
         if (userBagData.length == 0) {
             // this.popNode.active = false;
             this.tipNode.active = true;
-            // return;
+            this.bagActionBtn.active = false;
+            loadingManager.hideLoading();
+            return;
         } else {
             this.tipNode.active = false;
         }
+        console.log('element = ' , userBagData[0]);
         if (!isFromUse && BAG_CONFIG[userBagData[0].id]) {
             this.showDetail(userBagData[0]);
         } else if (isFromUse && this.chosedGood.id && this.chosedGood.count > 0) {
@@ -231,10 +242,10 @@ export class BagRender extends Component {
 
     }
 
-    hideMask() {
-        this.maskNode.active = false;
-        this.descriptionNode.active = false;
-    }
+    // hideMask() {
+    //     this.maskNode.active = false;
+    //     this.descriptionNode.active = false;
+    // }
 
     showDetail(bagItem: EnrichedBagItem) {
         this.chosedGood = bagItem;
@@ -319,6 +330,7 @@ export class BagRender extends Component {
         this.defenseBtn.name = 'defense';
 
 
+        //详情中下面按钮
         UIButtonUtil.initBtn(this.bagActionBtn, () => {
             //判断类型进行操作
             if (this.chosedGood.id == 20) {
@@ -330,15 +342,17 @@ export class BagRender extends Component {
                 GetOrUsePopComponent.earnBageItemList.push(this.chosedGood, synthesisItem);
                 GetOrUsePopComponent.depleteBageItemList.push(this.chosedGood, this.chosedGood);
                 const successItem: EnrichedBagItem = {
-                    id: 21,count: 1,name: '半碳桨',price: 0,status: 0,
-                    use: 0,desc: '每次划桨，任务次数1.5倍'};
+                    id: 21, count: 1, name: '半碳桨', price: 0, status: 0,
+                    use: 0, desc: '每次划桨，任务次数1.5倍'
+                };
                 GetOrUsePopComponent.successBageItemList.push(successItem);
                 const failItem: EnrichedBagItem = {
-                    id: 20,count: 1,name: '双桨',price: 0,status: 0,use: 0,
-                    desc: '每次划桨，任务次数1.1倍'};
+                    id: 20, count: 1, name: '双桨', price: 0, status: 0, use: 0,
+                    desc: '每次划桨，任务次数1.1倍'
+                };
                 GetOrUsePopComponent.failBageItemList.push(failItem);
                 this.node.addChild(SynthesisNode);
-                
+
             } else if (this.chosedGood && this.chosedGood.id) {
                 this.userProps(this.chosedGood.id);
             }

@@ -1,10 +1,13 @@
 import { _decorator, Component, Node, Slider, Sprite, Toggle, UITransform, Vec3, Label, sys } from 'cc';
 import GameConfig from '../../../Config/GameConfig';
 import { UIButtonUtil } from '../../../Base/UIButtonUtil';
-import { IPlayerSetInfo, LocalStorageKey } from '../../../Data/Enum';
+import { EVENT_ENUM, IPlayerSetInfo, LocalStorageKey, NoticesType, popType, PREFAB_PATH_ENUM } from '../../../Data/Enum';
 import UserDataManager from '../../../Data/UserDataManager';
 import { JSB } from 'cc/env';
 import ConfigManager from '../../../Base/ConfigManager';
+import { AudioBGMManager } from '../../../Base/AudioBGMManager';
+import { AudioManager } from '../../../Base/AudioManager';
+import EventManager from '../../../Base/EventManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('Setting')
@@ -38,6 +41,8 @@ export class Setting extends Component {
     @property({ type: Label })
     private versionLabel: Label = null!;
     @property({ type: Node })
+    private DescriptionBtn: Node = null!;
+    @property({ type: Node })
     private quitBtn: Node = null!;
 
     private personalInfo: IPlayerSetInfo = null;
@@ -46,14 +51,15 @@ export class Setting extends Component {
     private static _instance: Setting | null = null;
 
     /** 获取 NetManager 单例实例（组件模式下存在即返回） */
-    public static get Instance(): Setting | null {
+    public static get Instance(): Setting {
+        if (!this._instance) {
+            this._instance = new Setting();
+        }
         return this._instance;
     }
 
 
     protected start(): void {
-
-
 
         // 初始化进度
         //背景音乐
@@ -85,8 +91,15 @@ export class Setting extends Component {
 
         });
 
+        UIButtonUtil.initBtn(this.DescriptionBtn, () => {
+            EventManager.Instance.emit(EVENT_ENUM.RenderHomePop, {
+                prefab_url: PREFAB_PATH_ENUM.SystemAnnouncement,
+                source: popType.Notice, typeSpecific: NoticesType.Introduction
+            });
+        });
+
         UIButtonUtil.initBtn(this.quitBtn, () => {
-            this.onExitClick();
+            this.onExitRedClick();
         });
 
     }
@@ -102,12 +115,10 @@ export class Setting extends Component {
         this.isInitialized = true;
     }
 
-
     getSaveSetting() {
         const savedData = sys.localStorage.getItem(LocalStorageKey.PersonalConfig + `_${UserDataManager.Instance.UserInfo.uid}`);
         this.personalInfo = savedData ? JSON.parse(savedData) : this.getDefaultSettings();
         ConfigManager.Instance.personalSetting = this.personalInfo;
-        console.log('PersonalConfig = ', this.personalInfo);
         this.updateMusicBGMProgress(this.personalInfo.musicBGMVolume);
         this.updateSoungEffectProgress(this.personalInfo.soundEffectsVolume);
 
@@ -128,7 +139,9 @@ export class Setting extends Component {
         return {
             userId: UserDataManager.Instance.UserInfo.uid,
             musicBGMVolume: 0.3,
-            soundEffectsVolume: 0.3
+            soundEffectsVolume: 0.3,
+            musicBGMIsOn: true,
+            soundEffectsIsOn: true
         };
     }
 
@@ -140,11 +153,16 @@ export class Setting extends Component {
             // 开启状态
             this.soundEffectNodeSwitchOn.active = true;
             this.soundEffectNodeSwitchOff.active = false;
+            this.personalInfo.soundEffectsIsOn = true;
+            this.updateSoungEffectProgress(this.personalInfo.soundEffectsVolume > 0 ? this.personalInfo.soundEffectsVolume : 0.3);
         } else {
             // 关闭状态
             this.soundEffectNodeSwitchOn.active = false;
             this.soundEffectNodeSwitchOff.active = true;
+            this.personalInfo.soundEffectsIsOn = false;
+            this.updateSoungEffectProgress(0);
         }
+
     }
 
     private onSoungEffectSliderChanged(slider: Slider) {
@@ -152,6 +170,18 @@ export class Setting extends Component {
     }
 
     private updateSoungEffectProgress(progress: number) {
+        if (progress <= 0) {
+            // 关闭状态
+            this.soundEffectToggle.isChecked = false;
+            this.soundEffectNodeSwitchOn.active = false;
+            this.soundEffectNodeSwitchOff.active = true;
+        } else {
+            // 开启状态
+            this.soundEffectToggle.isChecked = true;
+            this.soundEffectNodeSwitchOn.active = true;
+            this.soundEffectNodeSwitchOff.active = false;
+        }
+        AudioManager.Instance.soundEffectVolume = progress;
         this.soundEffectSlider.progress = progress;
         // console.log('this.soundEffectSlider.progress = ',this.soundEffectSlider.progress);
         // 确保进度在0-1之间
@@ -183,16 +213,19 @@ export class Setting extends Component {
     private onMusicBGMToggle(toggle: Toggle) {
         const isChecked = toggle.isChecked;
         console.log('背景音乐 state:', isChecked ? 'ON' : 'OFF');
-
         // 在这里添加你的业务逻辑
         if (isChecked) {
             // 开启状态
             this.musicNodeSwitchOn.active = true;
             this.musicNodeSwitchOff.active = false;
+            this.personalInfo.musicBGMIsOn = true;
+            this.updateMusicBGMProgress(this.personalInfo.musicBGMVolume > 0 ? this.personalInfo.musicBGMVolume : 0.3);
         } else {
             // 关闭状态
             this.musicNodeSwitchOn.active = false;
             this.musicNodeSwitchOff.active = true;
+            this.personalInfo.musicBGMIsOn = false;
+            this.updateMusicBGMProgress(0);
         }
     }
 
@@ -201,6 +234,19 @@ export class Setting extends Component {
     }
 
     private updateMusicBGMProgress(progress: number) {
+        if (progress <= 0) {
+            // 关闭状态
+            this.musicBGMToggle.isChecked = false;
+            this.musicNodeSwitchOn.active = false;
+            this.musicNodeSwitchOff.active = true;
+        } else {
+            // 开启状态
+            this.musicBGMToggle.isChecked = true;
+            this.musicNodeSwitchOn.active = true;
+            this.musicNodeSwitchOff.active = false;
+        }
+
+        AudioBGMManager.Instance.musicBGMVolume = progress;
         this.musicBGMSlider.progress = progress;
         // 确保进度在0-1之间
         progress = Math.max(0, Math.min(1, progress));
@@ -225,6 +271,54 @@ export class Setting extends Component {
         // 计算滑块的最终位置 padding为加数基础，根据progress得出滑块应该在哪
         const handleX = handleLeft + (handleRight - handleLeft) * progress;
         this.musicBGMHandleNode.setPosition(new Vec3(handleX, 0, 0));
+    }
+
+
+
+    private onExitRedClick() {
+        console.log("退出按钮被点击 onExitRedClick");
+        // 方法1: 发送消息给原生App
+        this.sendMessageToNativeRed('exitApp');
+
+        // 方法2: 调用原生方法 (如果App有注入)
+        // this.callNativeMethod();
+    }
+
+    private sendMessageToNativeRed(message: string) {
+        try {
+            var userAgent = navigator.userAgent.toLowerCase();
+            console.log('sendMessageToNativeRed userAgent = ' , userAgent);
+            if (this.isAndroidApp() || userAgent.includes("android")) {
+                // Android WebView
+                console.log('androidRed 111');
+                // if ((window as any).AndroidInterface) {
+                // console.log('androidRed 2222');
+                // 使用 any 断言避免 TS 对 window.app 的类型报错，同时增加安全判断
+                (window as any).app && (window as any).app.jsRun("exitApp");
+                // window.app.jsRun("read");
+                // (window as any).AndroidInterface.postMessage(JSON.stringify({
+                //     type: 'FROM_WEB',
+                //     action: message
+                // }));
+                // }
+            } else if (this.isIOSApp() || userAgent.includes("iphone os")) {
+                console.log('iosRed 1111');
+                // iOS WKWebView
+                // if ((window as any).webkit && (window as any).webkit.messageHandlers) {
+                // console.log('iosRed 2222');
+                // ToastManager.showToast('ios ios');
+                (window as any).webkit.messageHandlers.deviceInfo.postMessage({
+                    "body": "exitApp"
+                })
+                // (window as any).webkit.messageHandlers.nativeHandler.postMessage({
+                //     type: 'FROM_WEB',
+                //     action: message
+                // });
+                // }
+            }
+        } catch (e) {
+            console.error('红色按钮 发送消息到原生应用失败:', e);
+        }
     }
 
     private onExitClick() {

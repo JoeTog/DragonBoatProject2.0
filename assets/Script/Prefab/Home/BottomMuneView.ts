@@ -6,7 +6,7 @@ import { ToastManager } from '../UI/ToastManager';
 import UserDataManager from '../../Data/UserDataManager';
 import ConfigManager from '../../Base/ConfigManager';
 import EventManager from '../../Base/EventManager';
-import { EVENT_ENUM, popType, PREFAB_PATH_ENUM } from '../../Data/Enum';
+import { EVENT_ENUM, NoticesType, popType, PREFAB_PATH_ENUM } from '../../Data/Enum';
 import { loadingManager } from '../UI/LoadingManager';
 import { TaskMessageDto } from '../../Net/Shared/protocols/user/PtlGetTaskMessages';
 import { MyTask } from '../MyTask/MyTask';
@@ -50,7 +50,7 @@ export class BottomMuneView extends Component {
             .split(/\r?\n+/)        // 按换行拆分
             .map(s => s.trim())
             .filter(Boolean);
-        ConfigManager.Instance.systemInfo = gonggaoArr;
+        ConfigManager.Instance.announcement = gonggaoArr;
         ConfigManager.Instance.introduction = shuomingArr;
 
 
@@ -105,7 +105,7 @@ export class BottomMuneView extends Component {
         UIButtonUtil.initBtn(this.noticeBtn, () => {
             EventManager.Instance.emit(EVENT_ENUM.RenderHomePop, {
                 prefab_url: PREFAB_PATH_ENUM.SystemAnnouncement,
-                source: popType.null
+                source: popType.Notice,typeSpecific:NoticesType.Gonggao
             });
         });
         //消息

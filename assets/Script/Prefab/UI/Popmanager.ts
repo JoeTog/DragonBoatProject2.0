@@ -1,9 +1,10 @@
 import { _decorator, Component, instantiate, Node, Prefab } from 'cc';
 import EventManager from '../../Base/EventManager';
-import { EVENT_ENUM, popType, PREFAB_PATH_ENUM } from '../../Data/Enum';
+import { EVENT_ENUM, NoticesType, popType, PREFAB_PATH_ENUM } from '../../Data/Enum';
 import { resAssetLoad } from '../../Base/Utils';
 import { UIUserRecord } from '../../Prefab/UerInfo/UIUserRecord';
 import { loadingManager } from './LoadingManager';
+import { SystemAnnouncement } from './Notice/SystemAnnouncement';
 const { ccclass, property } = _decorator;
 
 @ccclass('Popmanager')
@@ -25,9 +26,9 @@ export class Popmanager extends Component {
 
 
     // popRender(prefab_url:PREFAB_PATH_ENUM){
-    popRender(payload: { prefab_url: PREFAB_PATH_ENUM, source: popType }) {
+    popRender(payload: { prefab_url: PREFAB_PATH_ENUM, source: popType, typeSpecific?: any }) {
         console.log(payload);
-        const { prefab_url, source } = payload;
+        const { prefab_url, source ,typeSpecific} = payload;
         if (prefab_url == PREFAB_PATH_ENUM.BagPrefab || prefab_url == PREFAB_PATH_ENUM.ShopPrefab
             || prefab_url == PREFAB_PATH_ENUM.UIUserInfo || prefab_url == PREFAB_PATH_ENUM.MyTask) {
             loadingManager.showLoadingImmediately();
@@ -47,15 +48,15 @@ export class Popmanager extends Component {
                 console.error('❌ 预制体加载失败:', prefab_url);
                 console.error('错误详情:', err);
             });
-        } else if (source == popType.personalGameRecord || source == popType.powerRecord) {
-            
+        // } else if (source == popType.personalGameRecord || source == popType.powerRecord) {
+        } else if(source == popType.Notice){
             resAssetLoad<Prefab>(prefab_url, Prefab).then(prefab => {
                 const node = instantiate(prefab);
-                const UIUserInfoTs = node.getComponent(UIUserRecord);
-                if (source == popType.personalGameRecord) {
-                    UIUserInfoTs.recordType = popType.personalGameRecord;
-                } else if (source == popType.powerRecord) {
-                    UIUserInfoTs.recordType = popType.powerRecord;
+                const systemAnnouncement = node.getComponent(SystemAnnouncement);
+                if (typeSpecific == NoticesType.Gonggao) {
+                    systemAnnouncement.noticesType = NoticesType.Gonggao;
+                } else if (typeSpecific == NoticesType.Introduction) {
+                    systemAnnouncement.noticesType = NoticesType.Introduction;
                 }
                 this.node.addChild(node);
             }).catch(err => {

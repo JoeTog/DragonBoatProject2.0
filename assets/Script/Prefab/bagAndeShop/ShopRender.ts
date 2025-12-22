@@ -7,7 +7,7 @@ import { BAG_CONFIG } from '../../Config';
 import { BigNumUtils, loadAvatar, resAssetLoad } from '../../Base/Utils';
 import { ToastManager } from '../UI/ToastManager';
 import { loadingManager } from '../UI/LoadingManager';
-import { GetOrUsePopType, showType } from '../../Data/Enum';
+import { GetOrUsePopType } from '../../Data/Enum';
 import { GetOrUsePop } from './GetOrUsePop';
 const { ccclass, property } = _decorator;
 
@@ -250,7 +250,7 @@ export class ShopRender extends Component {
         //getOrUsePop 弹窗购买成功
         const getOrUsePop = instantiate(this.getOrUsePop);
         const GetOrUsePopComponent = getOrUsePop.getComponent(GetOrUsePop);
-        GetOrUsePopComponent.showType = GetOrUsePopType.shopBuy;
+        GetOrUsePopComponent.getOrUsePopShowType = GetOrUsePopType.shopBuy;
         GetOrUsePopComponent.bagItemList.push(bagItem);
         this.node.addChild(getOrUsePop);
 

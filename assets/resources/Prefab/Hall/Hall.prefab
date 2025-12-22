@@ -2508,6 +2508,10 @@
       "__uuid__": "4b759d49-0ffd-4f99-9a68-5ff506422560",
       "__expectedType__": "cc.Prefab"
     },
+    "popViewPrefab": {
+      "__uuid__": "fbe1f1fc-810d-4296-9539-806a95bb0fbe",
+      "__expectedType__": "cc.Prefab"
+    },
     "_id": ""
   },
   {

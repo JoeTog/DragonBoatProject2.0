@@ -18,18 +18,27 @@ export class AudioBGMManager extends Singleton {
 
 
     private _musicBGMVolume: number = 0.3;
-    
+    private _musicBGMIsOn: boolean = true;
+
 
 
     public get musicBGMVolume(): number {
+        if (!this._musicBGMIsOn) {
+            return 0;
+        }
         return this._musicBGMVolume;
     }
     public set musicBGMVolume(value: number) {
+        if (!this._musicBGMIsOn && value > 0) {
+            this._musicBGMIsOn = true;
+        } else if (value <= 0 && this._musicBGMIsOn) {
+            this._musicBGMIsOn = false;
+        }
         this._musicBGMVolume = value;
         this.audioSource.volume = value;
     }
 
-    
+
     reset() {
         let audioMgr = new Node();
         audioMgr.name = '__audioMgr__';

@@ -1,4 +1,4 @@
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Component, instantiate, Node, Prefab } from 'cc';
 import { TeamInfoManager } from '../../Data/TeamInfoManager';
 import UserDataManager from '../../Data/UserDataManager';
 import { UIButtonUtil } from '../../Base/UIButtonUtil';
@@ -7,6 +7,10 @@ import { ToastManager } from '../UI/ToastManager';
 import EventManager from '../../Base/EventManager';
 import { EVENT_ENUM } from '../../Data/Enum';
 import { MsgTeamStatusChange } from '../../Net/Shared/protocols/team/MsgTeamStatusChange';
+import { PopViewManager } from '../UI/Notice/PopViewManager';
+import { BAG_CONFIG } from '../../Config';
+import { EnrichedBagItem } from '../../Net/Shared/models/Interfaces';
+import { loadingManager } from '../UI/LoadingManager';
 const { ccclass, property } = _decorator;
 
 
@@ -14,6 +18,10 @@ const { ccclass, property } = _decorator;
 
 @ccclass('bottomRender')
 export class bottomRender extends Component {
+
+
+    @property(Prefab)
+    popViewPrefab: Prefab = null;
 
 
     @property(Node)
@@ -27,6 +35,7 @@ export class bottomRender extends Component {
 
     @property(Node)
     popBtn: Node;
+
 
     private IsMatching: boolean = false;
 
@@ -48,7 +57,7 @@ export class bottomRender extends Component {
         UIButtonUtil.initBtn(this.popBtn, () => {
             this.exitTeam();
         });
-        
+
     }
 
     async exitTeam() {
@@ -82,20 +91,78 @@ export class bottomRender extends Component {
     }
 
     async startMatch() {
+
+        if (UserDataManager.Instance.IsDie) {
+            ToastManager.showToast('您已淘汰，请先复活');
+
+            const popV = instantiate(this.popViewPrefab);
+            const manager = popV.getComponent(PopViewManager);
+            manager.messageText = '是否使用复活药水进行复活？';
+            let itemId = UserDataManager.Instance.vipResurrection;
+            let itemName = '';
+            const config = BAG_CONFIG[itemId];
+            console.log(config);
+            const item: EnrichedBagItem = {
+                id: itemId, count: 0, name: config[0], price: 0, status: 0,
+                use: 0, desc: ''
+            };
+            manager.showItemList = [item];
+            manager.messageText = '（当玩家淘汰后无法参与游戏，使用复活药水后方可继续游戏)';
+            manager.confirmBlock = async () => {
+                let ret = this.userProps();
+                if (ret) {
+                    popV.destroy();
+                    this.node.destroy();
+                }
+            };
+            this.node.addChild(popV);
+
+            return;
+        }
+
+
         if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
             console.warn('WebSocket 未连接，无法进行匹配');
             ToastManager.showToast('网络连接异常，请稍后重试【startMatch】');
             return;
         }
         this.IsMatching = true;
-        const data = await TsRpc.Instance.Client.callApi('team/Matching', { __ssoToken: UserDataManager.Instance.SsoToken })
-        if (!data.isSucc) {
-            ToastManager.showToast(data.err.message)
-            return;
-        }
+
+        // const data = await TsRpc.Instance.Client.callApi('team/Matching', { __ssoToken: UserDataManager.Instance.SsoToken })
+        // if (!data.isSucc) {
+        //     ToastManager.showToast(data.err.message)
+        //     return;
+        // }
 
         EventManager.Instance.emit(EVENT_ENUM.ShowMatching);
 
+    }
+
+    /**
+                     * 使用药水
+                     * @param index 背包数组索引
+                     */
+    async userProps() {
+        if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
+            console.warn('WebSocket 未连接，无法使用道具');
+            ToastManager.showToast('网络连接异常，请稍后重试【userProps】');
+            return;
+        }
+        loadingManager.showLoading();
+        let itemId = UserDataManager.Instance.vipResurrection;
+        let data = await TsRpc.Instance.Client.callApi("shop/UseItem", { __ssoToken: UserDataManager.Instance.SsoToken, id: itemId })
+        loadingManager.hideLoading();
+        if (data.isSucc) {
+            UserDataManager.Instance.IsDie = data.res.isdie;
+            EventManager.Instance.emit(EVENT_ENUM.RequestUserInfo);
+            ToastManager.showToast(data.res.msg);
+            return true;
+        } else {
+            if (data) {
+                ToastManager.showToast(data.err.message || '使用道具失败');
+                return false;
+            }
+        }
     }
 
     protected onDestroy(): void {

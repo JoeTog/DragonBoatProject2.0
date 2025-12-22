@@ -30,7 +30,7 @@ export class GetOrUsePop extends Component {
     private blurRadius: number = 2.0;
     private tintColor: Color = new Color(255, 255, 255, 150);  // 毛玻璃色调
 
-    public showType: GetOrUsePopType = null;
+    public getOrUsePopShowType: GetOrUsePopType = null;
     public bagItemList: EnrichedBagItem[] = [];//背包合成
 
     private popNode: Node = null;
@@ -49,18 +49,18 @@ export class GetOrUsePop extends Component {
 
     doRender() {
 
-        if (this.showType == GetOrUsePopType.shopBuy) {
+        if (this.getOrUsePopShowType == GetOrUsePopType.shopBuy) {
             this.titleLabel.string = '购买成功';
             this.doRenderOneShopBuyRender();
-        } else if (this.showType == GetOrUsePopType.exchange) {
+        } else if (this.getOrUsePopShowType == GetOrUsePopType.exchange) {
             this.titleLabel.string = '兑换成功';
             this.doRenderOneExchangeRender();
 
-        } else if (this.showType == GetOrUsePopType.bagSynthesisSuccess) {
+        } else if (this.getOrUsePopShowType == GetOrUsePopType.bagSynthesisSuccess) {
             this.titleLabel.string = '合成成功';
             this.doRenderOneShopBuyRender();
 
-        }else if (this.showType == GetOrUsePopType.bagSynthesisFail) {
+        }else if (this.getOrUsePopShowType == GetOrUsePopType.bagSynthesisFail) {
             this.titleLabel.string = '合成失败';
             let failBg = 'Texture/2.0/7合成界面/合成失败/spriteFrame';
             resAssetLoad<SpriteFrame>(failBg, SpriteFrame).then(res => {

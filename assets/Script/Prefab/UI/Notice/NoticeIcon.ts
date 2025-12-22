@@ -6,7 +6,7 @@ import UserDataManager from '../../../Data/UserDataManager';
 import { ToastManager } from '../ToastManager';
 import ConfigManager from '../../../Base/ConfigManager';
 import { ResGetGameConfig } from '../../../Net/Shared/protocols/PtlGetGameConfig';
-import { showType } from '../../../Data/Enum';
+import { NoticesType } from '../../../Data/Enum';
 const { ccclass, property } = _decorator;
 
 @ccclass('NoticeIcon')
@@ -59,14 +59,14 @@ export class NoticeIcon extends Component {
             .map(s => s.trim())
             .filter(Boolean);
 
-        ConfigManager.Instance.systemInfo = gonggaoArr;
+        ConfigManager.Instance.announcement = gonggaoArr;
         ConfigManager.Instance.introduction = shuomingArr;
 
         UIButtonUtil.initBtn(this.noticeBtnNode, () => {
             // this.node.addChild(noticeView);
             const noticeView = instantiate(this.noticeViewPrefab);
             const gonggaoManager = noticeView.getComponent(GonggaoManager);
-            gonggaoManager.showType = showType.Gonggao;
+            gonggaoManager.noticesType = NoticesType.Gonggao;
             
             if (this.windowsNode) {
                 this.windowsNode.addChild(noticeView);
@@ -81,7 +81,7 @@ export class NoticeIcon extends Component {
         UIButtonUtil.initBtn(this.detailBtnNode, () => {
             const noticeView = instantiate(this.noticeViewPrefab);
             const gonggaoManager = noticeView.getComponent(GonggaoManager);
-            gonggaoManager.showType = showType.Introduction;
+            gonggaoManager.noticesType = NoticesType.Introduction;
             
             if (this.windowsNode) {
                 this.windowsNode.addChild(noticeView);

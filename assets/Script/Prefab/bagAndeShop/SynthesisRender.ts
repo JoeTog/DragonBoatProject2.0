@@ -76,9 +76,9 @@ export class SynthesisRender extends Component {
             const GetOrUsePopComponent = getOrUsePop.getComponent(GetOrUsePop);
             const isSuccess = Math.random() < 0.5;
             if (isSuccess) {
-                GetOrUsePopComponent.showType = GetOrUsePopType.bagSynthesisSuccess;
+                GetOrUsePopComponent.getOrUsePopShowType = GetOrUsePopType.bagSynthesisSuccess;
             } else {
-                GetOrUsePopComponent.showType = GetOrUsePopType.bagSynthesisFail;
+                GetOrUsePopComponent.getOrUsePopShowType = GetOrUsePopType.bagSynthesisFail;
             }
             GetOrUsePopComponent.bagItemList = this.successBageItemList;
             console.log('bagItemList = ', GetOrUsePopComponent.bagItemList);

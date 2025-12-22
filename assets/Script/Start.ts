@@ -221,13 +221,17 @@ export class Start extends Component {
             JSON.stringify({
                 userId: UserDataManager.Instance.UserInfo.uid,
                 musicBGMVolume: 0.3,
-                soundEffectsVolume: 0.3
+                soundEffectsVolume: 0.3,
+                musicBGMIsOn:true,
+                soundEffectsIsOn:true
             })
         );
         return {
             userId: UserDataManager.Instance.UserInfo.uid,
             musicBGMVolume: 0.3,
-            soundEffectsVolume: 0.3
+            soundEffectsVolume: 0.3,
+            musicBGMIsOn:true,
+            soundEffectsIsOn:true
         };
     }
 

@@ -6,18 +6,23 @@ import { TsRpc } from '../../../Net/TsRpc';
 import UserDataManager from '../../../Data/UserDataManager';
 import { ToastManager } from '../ToastManager';
 import { TeamInfoManager } from '../../../Data/TeamInfoManager';
+import { JoeFunc } from '../../../Base/JoeFunc';
 const { ccclass, property } = _decorator;
 
 @ccclass('UIMatchManager')
 export class UIMatchManager extends Component {
 
     @property(Prefab)
-    UIMathingPrefab: Prefab;
+    UIMathingPrefabb: Prefab;
+
+
+    private _thisMatchNode: Node = null;
+    private _thisMatchRootNode: Node = null;
 
     private _countdownNum = 30;
     private _timeLabel: Label = null;
+    private _isMatchLabel: Label = null;
 
-    private _thisMatchNode: Node = null;
 
     private _thisCloseMatchNode: Node = null;
 
@@ -26,6 +31,13 @@ export class UIMatchManager extends Component {
 
     start() {
 
+        console.log('UIMatchManager');
+        console.log('UIMathingPrefab = ', this.UIMathingPrefabb);
+        const matchNode = instantiate(this.UIMathingPrefabb);
+        const rootBgNode = matchNode.getChildByName('Root');
+        matchNode.children.forEach((child, index) => {
+            console.log(`[${index}] ${child.name} (是否激活: ${child.activeInHierarchy})`);
+        });
         EventManager.Instance.on(EVENT_ENUM.ShowMatching, this.show, this);
         EventManager.Instance.on(EVENT_ENUM.HideMatching, this.hide, this);
 
@@ -40,21 +52,37 @@ export class UIMatchManager extends Component {
         EventManager.Instance.off(EVENT_ENUM.HideMatching, this.hide);
     }
 
-    show() {
-        console.log('show');
+    async show() {
+
+        console.log('show 方法被调用');
+        console.log('UIMathingPrefab:', this.UIMathingPrefabb);
+
+        let matchNode = instantiate(this.UIMathingPrefabb);
+        console.log('matchNode 类型:', typeof matchNode);
+        console.log('matchNode 值:', matchNode);
+
+        // 检查 matchNode 的原型链
+        // console.log('matchNode 原型:', Object.getPrototypeOf(matchNode));
+
+
         // 如果已经存在匹配节点，先销毁
         if (this._thisMatchNode && this._thisMatchNode.isValid) {
             this.hide(); // 或者直接销毁
         }
-        const matchNode = instantiate(this.UIMathingPrefab);
-        this._timeLabel = matchNode.getChildByName('time').getComponent(Label);
+        matchNode = instantiate(this.UIMathingPrefabb);
+        const rootBgNode = matchNode.getChildByName('Root').getChildByName('bg');
+        this._timeLabel = rootBgNode.getChildByName('teamAndCountdown').getChildByName('countDown').getChildByName('value').getComponent(Label);
         this._timeLabel.string = this._countdownNum + 's';
         this.node.addChild(matchNode);
+        this._thisMatchRootNode = rootBgNode;
         this._thisMatchNode = matchNode;
         this.countDownTime();
 
+        this._isMatchLabel = rootBgNode.getChildByName('teamAndCountdown').getChildByName('countDown').getChildByName('label').getComponent(Label);
+        this._isMatchLabel.string = '匹配中';
+
         let isCaptain: boolean = TeamInfoManager.Instance.IsCaptainInTeam;
-        this._thisCloseMatchNode = this._thisMatchNode.getChildByName('closeBtn');
+        this._thisCloseMatchNode = rootBgNode.getChildByName('close');
         if (isCaptain && TeamInfoManager.Instance.TeamInfo.id == UserDataManager.Instance.UserInfo.uid) {
             this._thisCloseMatchNode.active = true;
             UIButtonUtil.initBtn(this._thisCloseMatchNode, () => {

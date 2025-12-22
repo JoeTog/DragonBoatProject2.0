@@ -5,11 +5,12 @@ import { EVENT_ENUM, popType, PREFAB_PATH_ENUM } from '../../Data/Enum';
 import { TsRpc } from '../../Net/TsRpc';
 import UserDataManager from '../../Data/UserDataManager';
 import { ToastManager } from '../UI/ToastManager';
-import { IShopItem, ITeam, ITeamBase } from '../../Net/Shared/models/Interfaces';
+import { EnrichedBagItem, IShopItem, ITeam, ITeamBase } from '../../Net/Shared/models/Interfaces';
 import { isValidPositiveInteger, loadAvatar, resAssetLoad, truncateString } from '../../Base/Utils';
-import { IMG_URL_EXTRA_PARAM } from '../../Config';
+import { BAG_CONFIG, IMG_URL_EXTRA_PARAM } from '../../Config';
 import { TeamInfoManager } from '../../Data/TeamInfoManager';
 import { loadingManager } from '../UI/LoadingManager';
+import { PopViewManager } from '../UI/Notice/PopViewManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('HallRender')
@@ -32,6 +33,8 @@ export class HallRender extends Component {
 
     @property(Prefab)
     PersonalMoney: Prefab = null;
+    @property(Prefab)
+    popViewPrefab: Prefab = null;
 
 
 
@@ -254,6 +257,29 @@ export class HallRender extends Component {
     async joinTeam(iddd: number, status: number, teamNameD: string, isNeedPassword: boolean) {
         if (UserDataManager.Instance.IsDie) {
             ToastManager.showToast('您已淘汰，请先复活');
+
+            const popV = instantiate(this.popViewPrefab);
+            const manager = popV.getComponent(PopViewManager);
+            manager.messageText = '是否使用复活药水进行复活？';
+            let itemId = UserDataManager.Instance.vipResurrection;
+            let itemName = '';
+            const config = BAG_CONFIG[itemId];
+            console.log(config);
+            const item: EnrichedBagItem = {
+                id: itemId, count: 0, name: config[0], price: 0, status: 0,
+                use: 0, desc: ''
+            };
+            manager.showItemList = [item];
+            manager.messageText = '（当玩家淘汰后无法参与游戏，使用复活药水后方可继续游戏)';
+            manager.confirmBlock = async () => {
+                let ret = this.userProps();
+                if (ret) {
+                    popV.destroy();
+                    this.node.destroy();
+                }
+            };
+            this.node.addChild(popV);
+
             return;
         }
         if (!UserDataManager.Instance.CanPlayToday) {
@@ -417,6 +443,32 @@ export class HallRender extends Component {
         }
     }
 
+    /**
+                * 使用药水
+                * @param index 背包数组索引
+                */
+    async userProps() {
+        if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
+            console.warn('WebSocket 未连接，无法使用道具');
+            ToastManager.showToast('网络连接异常，请稍后重试【userProps】');
+            return;
+        }
+        loadingManager.showLoading();
+        let itemId = UserDataManager.Instance.vipResurrection;
+        let data = await TsRpc.Instance.Client.callApi("shop/UseItem", { __ssoToken: UserDataManager.Instance.SsoToken, id: itemId })
+        loadingManager.hideLoading();
+        if (data.isSucc) {
+            UserDataManager.Instance.IsDie = data.res.isdie;
+            EventManager.Instance.emit(EVENT_ENUM.RequestUserInfo);
+            ToastManager.showToast(data.res.msg);
+            return true;
+        } else {
+            if (data) {
+                ToastManager.showToast(data.err.message || '使用道具失败');
+                return false;
+            }
+        }
+    }
 
     hidehall() {
 

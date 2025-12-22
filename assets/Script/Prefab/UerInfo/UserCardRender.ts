@@ -94,7 +94,7 @@ export class UserCardRender extends Component {
         UIButtonUtil.initBtn(this.avatarNode, () => {
             EventManager.Instance.emit(EVENT_ENUM.RenderHomePop, {
                 prefab_url: PREFAB_PATH_ENUM.UIUserInfo,
-                source: popType.personalGameRecord
+                source: popType.null
             });
         });
 

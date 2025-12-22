@@ -180,7 +180,7 @@ export class DjExchageRender extends Component {
                 //getOrUsePop 弹窗购买成功
                 const getOrUsePop = instantiate(this.getOrUsePop);
                 const GetOrUsePopComponent = getOrUsePop.getComponent(GetOrUsePop);
-                GetOrUsePopComponent.showType = GetOrUsePopType.exchange;
+                GetOrUsePopComponent.getOrUsePopShowType = GetOrUsePopType.exchange;
                 GetOrUsePopComponent.bagItemList.push(djItem, powerItem);
                 this.node.addChild(getOrUsePop);
 

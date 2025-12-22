@@ -14,7 +14,7 @@ export default class ConfigManager extends Singleton {
     }
 
 
-    private _systemInfo: string[] = []; // 公告信息
+    private _announcement: string[] = []; // 公告信息
     private _introduction: string[] = []; // 游戏说明信息
     private _messageArr: TaskMessageDto[] = []; // 游戏系统信息
     private _personalSetting: IPlayerSetInfo = null;
@@ -29,11 +29,11 @@ export default class ConfigManager extends Singleton {
         this._personalSetting = value;
     }
     
-    public get systemInfo(): string[] {
-        return this._systemInfo;
+    public get announcement(): string[] {
+        return this._announcement;
     }
-    public set systemInfo(value: string[]) {
-        this._systemInfo = value;
+    public set announcement(value: string[]) {
+        this._announcement = value;
     }
 
     public get introduction(): string[] {

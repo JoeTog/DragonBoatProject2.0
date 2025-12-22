@@ -114,27 +114,47 @@ export enum TaskType {
     noned,
 }
 
-//popManager跳转类型
+//popManager跳转类型,一个预制体用作2种数据显示时
 export enum popType {
     //无参数
     null,
-    /** 个人比赛记录 */
-    personalGameRecord,
-    /** 武力值记录 */
-    powerRecord
+    /** 公告 */
+    Notice
 }
 
-//公告显示内容
-export enum showType {
-    /** 公告 */
+//公告类型
+export enum NoticesType {
+        /** 公告 */
     Gonggao,
     /** 游戏介绍 */
-    Introduction,
-    /** 系统消息 */
-    Message,
-    /** 反馈 */
-    feedback
+    Introduction
 }
+
+// //popManager跳转类型
+// export enum popType {
+//     //无参数
+//     null,
+//     /** 个人比赛记录 */
+//     personalGameRecord,
+//     /** 武力值记录 */
+//     powerRecord,
+//     /** 公告 */
+//     Gonggao,
+//     /** 游戏介绍 */
+//     Introduction,
+// }
+
+//公告显示内容
+// export enum showType {
+//     /** 公告 */
+//     Gonggao,
+//     /** 游戏介绍 */
+//     Introduction,
+//     /** 系统消息 */
+//     Message,
+//     /** 反馈 */
+//     feedback
+// }
 
 //'buy_item' | 'team_fail' | 'elimination' | 'exchange_point';
 //武力值记录类型
@@ -184,7 +204,9 @@ export enum LocalStorageKey {
 export interface IPlayerSetInfo {
     userId: number,
     musicBGMVolume: number,
-    soundEffectsVolume:number
+    soundEffectsVolume:number,
+    musicBGMIsOn:boolean,
+    soundEffectsIsOn:boolean
 }
 
 /** getOrUse pop展示类型 */
