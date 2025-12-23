@@ -23,7 +23,8 @@ export class GameDataManager extends Singleton {
     private _vsTeamInfo: {
         name: string,
         avatar: string,
-        count: number
+        count: number,
+        maxcount: number
     }[] = []
 
 

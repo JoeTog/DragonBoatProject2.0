@@ -80,7 +80,8 @@ export class pickUpRewardManager extends Component {
                 // });
             }
             const config = BAG_CONFIG[element.id];
-            let icon_url = 'Texture/2.0/5游戏商店/道具图片/330x336/' + config[1] + '/spriteFrame';
+            // let icon_url = 'Texture/2.0/5游戏商店/道具图片/330x336/' + config[1] + '/spriteFrame';
+            let icon_url = `Texture/2.0/5游戏商店/道具图片/330x336/${config[1]}/spriteFrame`;
             resAssetLoad<SpriteFrame>(icon_url, SpriteFrame).then(res => {
                 dailyTaskItemManager.iconNode.getComponent(Sprite).spriteFrame = res;
             }).catch((err) => {

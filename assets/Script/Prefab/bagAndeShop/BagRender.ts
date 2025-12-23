@@ -184,7 +184,8 @@ export class BagRender extends Component {
     doRenderOne(bagItem: EnrichedBagItem, indexI: number) {
         const config = BAG_CONFIG[bagItem.id];
         let name = bagItem.name;
-        let icon_urll = 'Texture/2.0/5游戏商店/道具图片/112x114/' + config[1] + '/spriteFrame';
+        // let icon_urll = 'Texture/2.0/5游戏商店/道具图片/112x114/' + config[1] + '/spriteFrame';
+        let icon_urll = `Texture/2.0/5游戏商店/道具图片/112x114/${config[1]}/spriteFrame`;
         //初始化item
         const bagItemNode = instantiate(this.bagItem);
         //获取item上的namelabeel
@@ -227,8 +228,8 @@ export class BagRender extends Component {
         resAssetLoad<SpriteFrame>(icon_urll, SpriteFrame).then(res => {
             iconSprite.spriteFrame = res;
         }).catch((err) => {
-            console.error("icon加载失败: " + err + 'id =' + bagItem.id);
-            ToastManager.showToast('道具加载失败 道具id = ' + bagItem.id);
+            console.error("icon加载失败: " + `${err} ` + 'id =' + `${bagItem.id}`);
+            ToastManager.showToast('道具加载失败 道具id = ' + `${bagItem.id}` );
         })
 
 
@@ -260,7 +261,8 @@ export class BagRender extends Component {
         const config = BAG_CONFIG[bagItem.id];
         this.itemName.getComponent(Label).string = bagItem.name;
         //let iconurl = "Texture/bag/icon/" + config[1] + "/spriteFrame";
-        let icon_url = 'Texture/2.0/5游戏商店/道具图片/330x336/' + config[1] + '/spriteFrame';
+        // let icon_url = 'Texture/2.0/5游戏商店/道具图片/330x336/' + config[1] + '/spriteFrame';
+        let icon_url = `Texture/2.0/5游戏商店/道具图片/330x336/${config[1]}/spriteFrame`;
         resAssetLoad<SpriteFrame>(icon_url, SpriteFrame).then(res => {
             this.iconShow.getComponent(Sprite).spriteFrame = res;
         }).catch((err) => {

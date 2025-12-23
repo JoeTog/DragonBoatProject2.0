@@ -10,11 +10,12 @@ export interface MsgMatchSuccess {
      * 位置
      */
     roomIndex:number;
-    /**【08-26】对抗信息 名字 头像 人数 */
+    /**【08-26】对抗信息 名字 头像 人数 最大人数 */
     info:{
         name:string,
         avatar:string,
-        count:number
+        count:number,
+        maxcount:number
     }[]
     /**
      * 【09-02】生效的道具

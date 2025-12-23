@@ -79,7 +79,8 @@ export class PopViewManager extends Component {
         const icon = item.getChildByName('iconBg').getChildByName('icon').getComponent(Sprite);
         const nameLabel = item.getChildByName('name').getComponent(Label);
         const config = BAG_CONFIG[showItem.id];
-        let iconurl = 'Texture/2.0/5游戏商店/道具图片/112x114/' + config[1] + '/spriteFrame';
+        // let iconurl = 'Texture/2.0/5游戏商店/道具图片/112x114/' + config[1] + '/spriteFrame';
+        let iconurl = `Texture/2.0/5游戏商店/道具图片/112x114/${config[1]}/spriteFrame`;
         resAssetLoad<SpriteFrame>(iconurl, SpriteFrame).then(res => {
             icon.spriteFrame = res;
         }).catch((err) => {

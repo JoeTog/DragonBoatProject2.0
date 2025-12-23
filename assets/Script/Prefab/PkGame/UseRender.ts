@@ -26,7 +26,8 @@ export class UseRender extends Component {
     renderOne(bagId: number) {
         const node = instantiate(this.userIcon);
         const config = BAG_CONFIG[bagId];
-        let icon_url = 'Texture/bag/icon/' + config[1] + '/spriteFrame'
+        // let icon_url = 'Texture/bag/icon/' + config[1] + '/spriteFrame'
+        let icon_url = `Texture/bag/icon/${config[1]}/spriteFrame`;
         resAssetLoad<SpriteFrame>(icon_url,SpriteFrame).then(res => {
             node.getComponent(Sprite).spriteFrame = res;
             this.containNode.addChild(node);

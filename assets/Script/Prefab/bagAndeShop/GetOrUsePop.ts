@@ -151,7 +151,8 @@ export class GetOrUsePop extends Component {
         //itemGetOrUseItem
         const config = BAG_CONFIG[bagItem.id];
         let name = bagItem.name;
-        let icon_urll = 'Texture/2.0/5游戏商店/道具图片/112x114/' + config[1] + '/spriteFrame';
+        // let icon_urll = 'Texture/2.0/5游戏商店/道具图片/112x114/' + config[1] + '/spriteFrame';
+        let icon_urll = `Texture/2.0/5游戏商店/道具图片/112x114/${config[1]}/spriteFrame`;
         const itemGetOrUseItem = instantiate(this.itemGetOrUseItem);
         const iconBg = itemGetOrUseItem.getChildByName('iconBg');
         const countLabel = iconBg.getChildByName('mark').getChildByName('count');

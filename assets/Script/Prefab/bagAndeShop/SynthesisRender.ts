@@ -99,7 +99,8 @@ export class SynthesisRender extends Component {
         if (this.earnBageItemList.length == 2) {
             const itemFirst = this.earnBageItemList[0];
             const configFirst = BAG_CONFIG[itemFirst.id];
-            let icon_urlFirst = 'Texture/2.0/5游戏商店/道具图片/112x114/' + configFirst[1] + '/spriteFrame';
+            // let icon_urlFirst = 'Texture/2.0/5游戏商店/道具图片/112x114/' + configFirst[1] + '/spriteFrame';
+            let icon_urlFirst = `Texture/2.0/5游戏商店/道具图片/112x114/${configFirst[1]}/spriteFrame`;
             resAssetLoad<SpriteFrame>(icon_urlFirst, SpriteFrame).then(res => {
                 this.earnIconFirst.getComponent(Sprite).spriteFrame = res;
             }).catch((err) => {
@@ -109,7 +110,8 @@ export class SynthesisRender extends Component {
 
             const itemSec = this.earnBageItemList[1];
             const configSec = BAG_CONFIG[itemSec.id];
-            let icon_urlSec = 'Texture/2.0/5游戏商店/道具图片/112x114/' + configSec[1] + '/spriteFrame';
+            // let icon_urlSec = 'Texture/2.0/5游戏商店/道具图片/112x114/' + configSec[1] + '/spriteFrame';
+            let icon_urlSec = `Texture/2.0/5游戏商店/道具图片/112x114/${configSec[1]}/spriteFrame`;
             resAssetLoad<SpriteFrame>(icon_urlSec, SpriteFrame).then(res => {
                 this.earnIconSec.getComponent(Sprite).spriteFrame = res;
             }).catch((err) => {
@@ -122,7 +124,8 @@ export class SynthesisRender extends Component {
         if (this.depleteBageItemList.length == 2) {
             const itemFirst = this.depleteBageItemList[0];
             const configFirst = BAG_CONFIG[itemFirst.id];
-            let icon_urlFirst = 'Texture/2.0/5游戏商店/道具图片/112x114/' + configFirst[1] + '/spriteFrame';
+            // let icon_urlFirst = 'Texture/2.0/5游戏商店/道具图片/112x114/' + configFirst[1] + '/spriteFrame';
+            let icon_urlFirst = `Texture/2.0/5游戏商店/道具图片/112x114/${configFirst[1]}/spriteFrame`;
             resAssetLoad<SpriteFrame>(icon_urlFirst, SpriteFrame).then(res => {
                 this.depleteIconFirst.getComponent(Sprite).spriteFrame = res;
             }).catch((err) => {
@@ -132,7 +135,8 @@ export class SynthesisRender extends Component {
 
             const itemSec = this.depleteBageItemList[1];
             const configSec = BAG_CONFIG[itemSec.id];
-            let icon_urlSec = 'Texture/2.0/5游戏商店/道具图片/112x114/' + configSec[1] + '/spriteFrame';
+            // let icon_urlSec = 'Texture/2.0/5游戏商店/道具图片/112x114/' + configSec[1] + '/spriteFrame';
+            let icon_urlSec = `Texture/2.0/5游戏商店/道具图片/112x114/${configSec[1]}/spriteFrame`;
             resAssetLoad<SpriteFrame>(icon_urlSec, SpriteFrame).then(res => {
                 this.depleteIconSec.getComponent(Sprite).spriteFrame = res;
             }).catch((err) => {
@@ -155,7 +159,8 @@ export class SynthesisRender extends Component {
             //    //itemName iconShow deetailContentViewNode labelPrefab
             this.itemName.getComponent(Label).string = successGetItem.name;
             //let iconurl = "Texture/bag/icon/" + config[1] + "/spriteFrame";
-            let icon_url = 'Texture/2.0/5游戏商店/道具图片/330x336/' + configSuccessItem[1] + '/spriteFrame';
+            // let icon_url = 'Texture/2.0/5游戏商店/道具图片/330x336/' + configSuccessItem[1] + '/spriteFrame';
+            let icon_url = `Texture/2.0/5游戏商店/道具图片/330x336/${configSuccessItem[1]}/spriteFrame`;
             resAssetLoad<SpriteFrame>(icon_url, SpriteFrame).then(res => {
                 this.iconShow.getComponent(Sprite).spriteFrame = res;
             }).catch((err) => {

@@ -108,7 +108,7 @@ export class Setting extends Component {
 
         if (this.isInitialized) return;
 
-        const savedData = sys.localStorage.getItem(LocalStorageKey.PersonalConfig + `_${UserDataManager.Instance.UserInfo.uid}`);
+        const savedData = sys.localStorage.getItem(`${LocalStorageKey.PersonalConfig}` + `_${UserDataManager.Instance.UserInfo.uid}`);
         this.personalInfo = savedData ? JSON.parse(savedData) : this.getDefaultSettings();
         ConfigManager.Instance.personalSetting = this.personalInfo;
 
@@ -116,7 +116,7 @@ export class Setting extends Component {
     }
 
     getSaveSetting() {
-        const savedData = sys.localStorage.getItem(LocalStorageKey.PersonalConfig + `_${UserDataManager.Instance.UserInfo.uid}`);
+        const savedData = sys.localStorage.getItem(`${LocalStorageKey.PersonalConfig}` + `_${UserDataManager.Instance.UserInfo.uid}`);
         this.personalInfo = savedData ? JSON.parse(savedData) : this.getDefaultSettings();
         ConfigManager.Instance.personalSetting = this.personalInfo;
         this.updateMusicBGMProgress(this.personalInfo.musicBGMVolume);
@@ -130,7 +130,7 @@ export class Setting extends Component {
         this.personalInfo.soundEffectsVolume = this.soundEffectSlider.progress;
         ConfigManager.Instance.personalSetting = this.personalInfo;
         sys.localStorage.setItem(
-            LocalStorageKey.PersonalConfig + `_${UserDataManager.Instance.UserInfo.uid}`,
+            `${LocalStorageKey.PersonalConfig}` + `_${UserDataManager.Instance.UserInfo.uid}`,
             JSON.stringify(this.personalInfo)
         );
     }

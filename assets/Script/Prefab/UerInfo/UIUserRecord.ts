@@ -370,7 +370,7 @@ export class UIUserRecord extends Component {
         }
         // const datePlus8 = new Date(date.getTime() + 8 * 60 * 60 * 1000);
         const datePlus8 = new Date(date.getTime());
-        dateLabel.string = datePlus8.toLocaleDateString('zh-CN') + ' ' + datePlus8.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+        dateLabel.string = `${datePlus8.toLocaleDateString('zh-CN')}` + ' ' + `${datePlus8.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`;
         //         const base = new Date(date).getTime();
         //   if (isNaN(base)) return;
         //   const bj = new Date(base + 8 * 3600 * 1000);

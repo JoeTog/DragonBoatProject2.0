@@ -366,7 +366,6 @@ export class SingleOperatorRender extends Component {
             this.resetTouchState();
             return;
         }
-        console.log("处理滑动事件 InPlaying:" + this.InPlaying + ' tasktype:' + this.TaskType + ' end:' + this._touchEndPos + ' start:' + this._touchStartPos);
         if (!this.InPlaying) {
             console.log('❌️ 【滑动处理】 游戏未开始，忽略滑动');
             this.resetTouchState();

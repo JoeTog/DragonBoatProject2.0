@@ -57,7 +57,7 @@ export class Start extends Component {
     }
 
     logined() {
-        const savedData = sys.localStorage.getItem(LocalStorageKey.PersonalConfig + `_${UserDataManager.Instance.UserInfo.uid}`);
+        const savedData = sys.localStorage.getItem(`${LocalStorageKey.PersonalConfig}_${UserDataManager.Instance.UserInfo.uid}`);
         const personalSetting = savedData ? JSON.parse(savedData) : this.getDefaultSettings();
         ConfigManager.Instance.personalSetting = personalSetting;
 
@@ -136,17 +136,17 @@ export class Start extends Component {
         if (teamData.res.teamId > 0 && teamData.res.roomId > 0) {
             //游戏中
             // 表示在游戏中,请求获取队伍信息，直接进入
-            const teamInfo = await TsRpc.Instance.Client.callApi("team/GetTeamInfo", { __ssoToken: UserDataManager.Instance.SsoToken });
-            TeamInfoManager.Instance.TeamInfo = teamInfo.res.info
-            const pk_info = await TsRpc.Instance.Client.callApi("room/GetRoomInfo", { __ssoToken: UserDataManager.Instance.SsoToken });
-            GameDataManager.Instance.restoreGame(pk_info.res.roomIndex, pk_info.res.info, userData.res.gameItems, pk_info.res.currentTask?.status, pk_info.res?.currentTask);
+            // const teamInfo = await TsRpc.Instance.Client.callApi("team/GetTeamInfo", { __ssoToken: UserDataManager.Instance.SsoToken });
+            // TeamInfoManager.Instance.TeamInfo = teamInfo.res.info
+            // const pk_info = await TsRpc.Instance.Client.callApi("room/GetRoomInfo", { __ssoToken: UserDataManager.Instance.SsoToken });
+            // GameDataManager.Instance.restoreGame(pk_info.res.roomIndex, pk_info.res.info, userData.res.gameItems, pk_info.res.currentTask?.status, pk_info.res?.currentTask);
 
         } else if (teamData.res.teamId > 0) {
             //有队伍
             const myTeamInfo = await TsRpc.Instance.Client.callApi('team/GetTeamInfo', { __ssoToken: UserDataManager.Instance.SsoToken });
             console.log('myTeamInfo = ', myTeamInfo);
             if (!myTeamInfo || !myTeamInfo.res || !myTeamInfo.res.hasTeam) {
-                ToastManager.showToast('队伍不存在: ' + myTeamInfo);
+                ToastManager.showToast('队伍不存在: ');
                 return;
             }
             if (!myTeamInfo.isSucc) {
@@ -217,7 +217,7 @@ export class Start extends Component {
 
     private getDefaultSettings(): IPlayerSetInfo {
         sys.localStorage.setItem(
-            LocalStorageKey.PersonalConfig + `_${UserDataManager.Instance.UserInfo.uid}`,
+            `${LocalStorageKey.PersonalConfig}_${UserDataManager.Instance.UserInfo.uid}`,
             JSON.stringify({
                 userId: UserDataManager.Instance.UserInfo.uid,
                 musicBGMVolume: 0.3,

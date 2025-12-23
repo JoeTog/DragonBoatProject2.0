@@ -1,4 +1,4 @@
-import { _decorator, Component, instantiate, Node, Prefab } from 'cc';
+import { _decorator, Component, find, instantiate, Node, Prefab, UITransform, Widget } from 'cc';
 import { TeamInfoManager } from '../../Data/TeamInfoManager';
 import UserDataManager from '../../Data/UserDataManager';
 import { UIButtonUtil } from '../../Base/UIButtonUtil';
@@ -84,7 +84,6 @@ export class bottomRender extends Component {
             }
         } else if (msg.status == 0) {
             //可能是队长取消匹配,有matchingFail通知 这里不需要做通知，做了通知 会导致刚hide又 show了一个
-
             EventManager.Instance.emit(EVENT_ENUM.HideMatching);
         }
 
@@ -93,7 +92,7 @@ export class bottomRender extends Component {
     async startMatch() {
 
         if (UserDataManager.Instance.IsDie) {
-            ToastManager.showToast('您已淘汰，请先复活');
+            // ToastManager.showToast('您已淘汰，请先复活');
 
             const popV = instantiate(this.popViewPrefab);
             const manager = popV.getComponent(PopViewManager);
@@ -112,11 +111,46 @@ export class bottomRender extends Component {
                 let ret = this.userProps();
                 if (ret) {
                     popV.destroy();
-                    this.node.destroy();
                 }
             };
-            this.node.addChild(popV);
+            // this.node.addChild(popV);
 
+
+            let windowsNode = find('Canvas/windows');
+            if (!windowsNode) {
+                const canvasNode = find('Canvas');
+                if (canvasNode) {
+                    windowsNode = canvasNode.getChildByName('windows');
+                    if (!windowsNode) {
+                        windowsNode = new Node('windows');
+                        canvasNode.addChild(windowsNode);
+                    }
+                    const canvasTransform = canvasNode.getComponent(UITransform);
+                    if (canvasTransform) {
+                        const windowsTransform = windowsNode.getComponent(UITransform) ?? windowsNode.addComponent(UITransform);
+                        windowsTransform.setContentSize(canvasTransform.contentSize);
+                    }
+                    const windowsWidget = windowsNode.getComponent(Widget) ?? windowsNode.addComponent(Widget);
+                    windowsWidget.isAlignLeft = true;
+                    windowsWidget.isAlignRight = true;
+                    windowsWidget.isAlignTop = true;
+                    windowsWidget.isAlignBottom = true;
+                    windowsWidget.left = 0;
+                    windowsWidget.right = 0;
+                    windowsWidget.top = 0;
+                    windowsWidget.bottom = 0;
+                    windowsWidget.updateAlignment();
+                    windowsNode.setSiblingIndex(canvasNode.children.length - 1);
+                }
+            }
+            if (windowsNode) {
+                windowsNode.addChild(popV);
+                popV.setSiblingIndex(windowsNode.children.length - 1);
+            } else {
+                console.warn('[HomeManager] windows 节点未找到，fallback 到当前节点');
+                this.node.addChild(popV);
+                popV.setSiblingIndex(this.node.children.length - 1);
+            }
             return;
         }
 
@@ -128,11 +162,11 @@ export class bottomRender extends Component {
         }
         this.IsMatching = true;
 
-        // const data = await TsRpc.Instance.Client.callApi('team/Matching', { __ssoToken: UserDataManager.Instance.SsoToken })
-        // if (!data.isSucc) {
-        //     ToastManager.showToast(data.err.message)
-        //     return;
-        // }
+        const data = await TsRpc.Instance.Client.callApi('team/Matching', { __ssoToken: UserDataManager.Instance.SsoToken })
+        if (!data.isSucc) {
+            ToastManager.showToast(data.err.message)
+            return;
+        }
 
         EventManager.Instance.emit(EVENT_ENUM.ShowMatching);
 

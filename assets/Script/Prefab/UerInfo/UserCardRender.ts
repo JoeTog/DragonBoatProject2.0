@@ -178,7 +178,9 @@ export class UserCardRender extends Component {
             this.avatar_img = this.node.getChildByName('userinfo').getChildByName('avatar').getChildByName('mask').getChildByName('img').getComponent(Sprite);
         }
         loadAvatar(avatar + IMG_URL_EXTRA_PARAM).then((res: SpriteFrame) => {
+            if (this.avatar_img.spriteFrame) {
             this.avatar_img.spriteFrame = res;
+            }
         })
 
 

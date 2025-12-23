@@ -113,11 +113,12 @@ export class TeammembersRender extends Component {
             return;
         }
         const userInfo = UserDataManager.Instance.UserInfo;
-        let needUpdateName = "member" + userInfo.uid;
+        // let needUpdateName = "member" + userInfo.uid;
+        let needUpdateName = `member${userInfo.uid}`;
         for (let i = 0; i < this.contentView.children.length; i++) {
             const element = this.contentView.children[i];
             if (element.name == needUpdateName) {
-                element.getChildByName("die").active = userInfo.isdie === 1;
+                element.getChildByName("eliminate").active = userInfo.isdie === 1;
                 break
             }
         }
@@ -171,7 +172,7 @@ export class TeammembersRender extends Component {
         // this.doRender();
         // return;
 
-        let needDelName = 'member' + uid;
+        let needDelName = 'member' + `${uid}`;
         for (let i = 0; i < this.contentView.children.length; i++) {
             const element = this.contentView.children[i];
             if (element.name == needDelName) {
@@ -203,7 +204,7 @@ export class TeammembersRender extends Component {
 
     renderOne(member: IPlayer) {
         const memberItemLocal = instantiate(this.memberItem);
-        memberItemLocal.name = 'member' + member.user.uid;
+        memberItemLocal.name = 'member' + `${member.user.uid}`;
 
         const disableNode = memberItemLocal.getChildByName('eliminate');
         const Root = memberItemLocal.getChildByName('Root');
@@ -352,7 +353,8 @@ export class TeammembersRender extends Component {
             this.refreshMember();
             return;
         } else {
-            ToastManager.showToast('成功踢出[' + name + ']');
+            // ToastManager.showToast('成功踢出[' + name + ']');
+            ToastManager.showToast(`成功踢出 [${name}]`);
         }
 
 
