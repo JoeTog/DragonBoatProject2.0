@@ -296,7 +296,7 @@ export class HallRender extends Component {
         // }
         if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
             console.warn('WebSocket 未连接，无法加入队伍');
-            ToastManager.showToast('网络连接异常，请稍后重试【joinTeam】');
+            ToastManager.showToast('网络连接异常，请稍后重试【加入队伍】');
             return;
         }
         if (!isNeedPassword) {
@@ -368,7 +368,7 @@ export class HallRender extends Component {
             }
             if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
                 console.warn('WebSocket 未连接，无法加入队伍');
-                ToastManager.showToast('网络连接异常，请稍后重试【sureBtn hallrender】');
+                ToastManager.showToast('网络连接异常，请稍后重试【加入队伍】');
                 return;
             }
             let data = await TsRpc.Instance.Client.callApi("team/JoinTeam", { password: numStr, id: iddd, __ssoToken: UserDataManager.Instance.SsoToken })
@@ -402,7 +402,7 @@ export class HallRender extends Component {
     async requestGetTeamInfo() {
         if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
             console.warn('WebSocket 未连接，无法获取队伍信息');
-            ToastManager.showToast('网络连接异常，请稍后重试【requestGetTeamInfo】');
+            ToastManager.showToast('网络连接异常，请稍后重试【队伍信息】');
             return;
         }
         //请求队伍信息，赋值到userdata 通知跳转、通知隐藏hall
@@ -429,7 +429,7 @@ export class HallRender extends Component {
 
         if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
             console.warn('WebSocket 未连接，无法获取队伍列表');
-            ToastManager.showToast('网络连接异常，请稍后重试【getListData】');
+            ToastManager.showToast('网络连接异常，请稍后重试【获取商品】');
             return [];
         }
 
@@ -450,7 +450,7 @@ export class HallRender extends Component {
     async userProps() {
         if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
             console.warn('WebSocket 未连接，无法使用道具');
-            ToastManager.showToast('网络连接异常，请稍后重试【userProps】');
+            ToastManager.showToast('网络连接异常，请稍后重试【使用药水】');
             return;
         }
         loadingManager.showLoading();

@@ -213,7 +213,7 @@ export class ShopRender extends Component {
         }
         if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
             console.warn('WebSocket 未连接，无法购买道具');
-            ToastManager.showToast('网络连接异常，请稍后重试【doShopAction】');
+            ToastManager.showToast('网络连接异常，请稍后重试【购买商品】');
             return;
         }
 
@@ -262,7 +262,7 @@ export class ShopRender extends Component {
 
         if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
             console.warn('WebSocket 未连接，无法获取商品列表');
-            ToastManager.showToast('网络连接异常，请稍后重试【getShopList】');
+            ToastManager.showToast('网络连接异常，请稍后重试【获取商品】');
             return;
         }
 

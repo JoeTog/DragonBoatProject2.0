@@ -87,7 +87,7 @@ export class TeamInfoManager extends Singleton {
     public async getTeamInfo() {
         if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
             console.warn('WebSocket 未连接，无法获取队伍GetTeamInfo');
-            ToastManager.showToast('网络连接异常，请稍后重试【getTeamInfo】');
+            ToastManager.showToast('网络连接异常，请稍后重试【队伍信息】');
             return;
         }
         // loadingManager.showLoading();

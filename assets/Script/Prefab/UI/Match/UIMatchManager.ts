@@ -405,7 +405,7 @@ export class UIMatchManager extends Component {
     async stopMatching() {
         if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
             console.warn('WebSocket 未连接，无法停止匹配');
-            ToastManager.showToast('网络连接异常，请稍后重试【stopMatching】');
+            ToastManager.showToast('网络连接异常，请稍后重试【停止匹配】');
             return;
         }
         const data = await TsRpc.Instance.Client.callApi('team/CancelMatching', { __ssoToken: UserDataManager.Instance.SsoToken })

@@ -171,7 +171,7 @@ export class HomeManager extends Component {
                 // console.trace('当前调用栈');
                 if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
                     console.warn('WebSocket 未连接，无法获取个人信息');
-                    ToastManager.showToast('网络连接异常，请稍后重试【showHome】');
+                    ToastManager.showToast('网络连接异常，请稍后重试【个人信息】');
                     return;
                 }
                 const userData = await TsRpc.Instance.Client.callApi('user/GetInfo', { __ssoToken: UserDataManager.Instance.SsoToken });
@@ -272,8 +272,8 @@ export class HomeManager extends Component {
     //检查是否维护中
     async CheckMaintenance(): Promise<boolean> {
         if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
-            console.warn('WebSocket 未连接，无法获取游戏记录');
-            ToastManager.showToast('网络连接异常，请稍后重试【getRecordData】');
+            console.warn('WebSocket 未连接，检查');
+            ToastManager.showToast('网络连接异常，请稍后重试【检查】');
             return false;
         }
         try {
@@ -397,7 +397,7 @@ export class HomeManager extends Component {
             }
             if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
                 console.warn('WebSocket 未连接，无法创建队伍');
-                ToastManager.showToast('网络连接异常，请稍后重试【sureBtn homemanager】');
+                ToastManager.showToast('网络连接异常，请稍后重试【创建队伍】');
                 return;
             }
             let data = null;
@@ -487,7 +487,7 @@ export class HomeManager extends Component {
     async getTeamInfo() {
         if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
             console.warn('WebSocket 未连接，无法获取队伍GetTeamInfo');
-            ToastManager.showToast('网络连接异常，请稍后重试【getTeamInfo】');
+            ToastManager.showToast('网络连接异常，请稍后重试【队伍信息】');
             return;
         }
         loadingManager.showLoading();

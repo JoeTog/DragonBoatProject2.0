@@ -136,7 +136,7 @@ export class DjExchageRender extends Component {
         }
         if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
             console.warn('WebSocket 未连接，无法兑换点卷');
-            ToastManager.showToast('网络连接异常，请稍后重试【doExchage】');
+            ToastManager.showToast('网络连接异常，请稍后重试【兑换】');
             return;
         }
         const count = num;

@@ -427,7 +427,7 @@ export class UIUserRecord extends Component {
     async getPowerRecordData(page: number = 1): Promise<PowerRecordItemData[]> {
         if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
             console.warn('WebSocket 未连接，无法获取游戏记录');
-            ToastManager.showToast('网络连接异常，请稍后重试【getRecordData】');
+            ToastManager.showToast('网络连接异常，请稍后重试【获取记录】');
             this.hasMorePowerRecord = false;
             loadingManager.hideLoading();
             return [];
@@ -486,7 +486,7 @@ export class UIUserRecord extends Component {
     async getGameRecordData(): Promise<IGameRecord[]> {
         if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
             console.warn('WebSocket 未连接，无法获取游戏记录');
-            ToastManager.showToast('网络连接异常，请稍后重试【getRecordData】');
+            ToastManager.showToast('网络连接异常，请稍后重试【获取记录】');
             loadingManager.hideLoading();
             return;
         }
@@ -513,7 +513,7 @@ export class UIUserRecord extends Component {
     async userProps() {
         if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
             console.warn('WebSocket 未连接，无法使用道具');
-            ToastManager.showToast('网络连接异常，请稍后重试【userProps】');
+            ToastManager.showToast('网络连接异常，请稍后重试【使用药水】');
             return;
         }
         loadingManager.showLoading();

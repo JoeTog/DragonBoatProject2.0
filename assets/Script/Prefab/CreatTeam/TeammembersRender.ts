@@ -346,7 +346,7 @@ export class TeammembersRender extends Component {
     async disablemember(memberid: number, name: string) {
         if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
             console.warn('WebSocket 未连接，无法踢人');
-            ToastManager.showToast('网络连接异常，请稍后重试【disablemember】');
+            ToastManager.showToast('网络连接异常，请稍后重试【踢人】');
             return;
         }
         const data = await TsRpc.Instance.Client.callApi('team/Kick', { uid: memberid, __ssoToken: UserDataManager.Instance.SsoToken })
@@ -368,7 +368,7 @@ export class TeammembersRender extends Component {
 
         if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
             console.warn('WebSocket 未连接，无法停止匹配');
-            ToastManager.showToast('网络连接异常，请稍后重试【exitTeam】');
+            ToastManager.showToast('网络连接异常，请稍后重试【退出队伍】');
             return;
         }
         const data = await TsRpc.Instance.Client.callApi('team/LeaveTeam', { __ssoToken: UserDataManager.Instance.SsoToken });

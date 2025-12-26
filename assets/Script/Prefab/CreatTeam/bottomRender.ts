@@ -64,7 +64,7 @@ export class bottomRender extends Component {
     async exitTeam() {
         if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
             console.warn('WebSocket 未连接，无法停止匹配');
-            ToastManager.showToast('网络连接异常，请稍后重试【exitTeam】');
+            ToastManager.showToast('网络连接异常，请稍后重试【退出队伍】');
             return;
         }
         const data = await TsRpc.Instance.Client.callApi('team/LeaveTeam', { __ssoToken: UserDataManager.Instance.SsoToken });
@@ -159,7 +159,7 @@ export class bottomRender extends Component {
 
         if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
             console.warn('WebSocket 未连接，无法进行匹配');
-            ToastManager.showToast('网络连接异常，请稍后重试【startMatch】');
+            ToastManager.showToast('网络连接异常，请稍后重试【匹配】');
             return;
         }
         this.IsMatching = true;
@@ -181,7 +181,7 @@ export class bottomRender extends Component {
     async userProps() {
         if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
             console.warn('WebSocket 未连接，无法使用道具');
-            ToastManager.showToast('网络连接异常，请稍后重试【userProps】');
+            ToastManager.showToast('网络连接异常，请稍后重试【使用药水】');
             return;
         }
         loadingManager.showLoading();

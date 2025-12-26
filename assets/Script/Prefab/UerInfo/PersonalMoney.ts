@@ -90,7 +90,7 @@ export class PersonalMoney extends Component {
         if (IsRequest) {
             if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
                 console.warn('WebSocket 未连接，无法获取个人信息');
-                ToastManager.showToast('网络连接异常，请稍后重试【showHome】');
+                ToastManager.showToast('网络连接异常，请稍后重试【个人信息】');
                 return;
             }
             const userData = await TsRpc.Instance.Client.callApi('user/GetInfo', { __ssoToken: UserDataManager.Instance.SsoToken });
@@ -157,7 +157,7 @@ export class PersonalMoney extends Component {
     async exitTeam() {
         if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
             console.warn('WebSocket 未连接，无法停止匹配');
-            ToastManager.showToast('网络连接异常，请稍后重试【exitTeam】');
+            ToastManager.showToast('网络连接异常，请稍后重试【退出队伍】');
             return;
         }
         const data = await TsRpc.Instance.Client.callApi('team/LeaveTeam', { __ssoToken: UserDataManager.Instance.SsoToken });

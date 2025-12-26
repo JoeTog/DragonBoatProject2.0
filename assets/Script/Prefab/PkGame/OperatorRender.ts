@@ -398,7 +398,7 @@ export class OperatorRender extends Component {
         this.resetTouchState();
         if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
             console.warn('WebSocket 未连接，无法addpower武力');
-            ToastManager.showToast('网络连接异常，请稍后重试【addPower】');
+            ToastManager.showToast('网络连接异常，请稍后重试【增加武力值】');
             return;
         }
 

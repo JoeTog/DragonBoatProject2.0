@@ -281,7 +281,7 @@ export class BagRender extends Component {
     async userProps(itemId: number) {
         if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
             console.warn('WebSocket 未连接，无法使用道具');
-            ToastManager.showToast('网络连接异常，请稍后重试【userProps】');
+            ToastManager.showToast('网络连接异常，请稍后重试【使用道具】');
             return;
         }
         loadingManager.showLoading();

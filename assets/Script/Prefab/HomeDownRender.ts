@@ -50,8 +50,8 @@ export class HomeDownRender extends Component {
     //检查是否维护中
     async CheckMaintenance(): Promise<boolean> {
         if (!TsRpc.Instance.Client || !TsRpc.Instance.Client.isConnected) {
-            console.warn('WebSocket 未连接，无法获取游戏记录');
-            ToastManager.showToast('网络连接异常，请稍后重试【getRecordData】');
+            console.warn('WebSocket 未连接，检查');
+            ToastManager.showToast('网络连接异常，请稍后重试【检查】');
             return false;
         }
         try {
