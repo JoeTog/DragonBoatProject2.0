@@ -49,6 +49,7 @@ export class PkGameRender extends Component {
         EventManager.Instance.emit(EVENT_ENUM.UpdateUserInfo, true);
 
         this.doRender();
+        GameDataManager.Instance.setInGameUI(false);
 
         UIButtonUtil.initBtn(this.popBtnNode, () => {
             GameDataManager.Instance._reset();

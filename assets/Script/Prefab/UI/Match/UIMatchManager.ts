@@ -1,6 +1,6 @@
 import { _decorator, Component, instantiate, Label, Node, Prefab, v3, Vec3, tween, Tween, Sprite, Color, Graphics, UITransform, v2, SpriteFrame } from 'cc';
 import EventManager from '../../../Base/EventManager';
-import { EVENT_ENUM } from '../../../Data/Enum';
+import { EVENT_ENUM, GameStatus } from '../../../Data/Enum';
 import { UIButtonUtil } from '../../../Base/UIButtonUtil';
 import { TsRpc } from '../../../Net/TsRpc';
 import UserDataManager from '../../../Data/UserDataManager';
@@ -51,6 +51,8 @@ export class UIMatchManager extends Component {
     private _animationRepeatCount = 1; // 设置动画重复次数
     private _currentRepeat = 0; // 当前重复次数
 
+    private _countdownTimer: number = null;
+
 
 
 
@@ -65,7 +67,14 @@ export class UIMatchManager extends Component {
         });
         EventManager.Instance.on(EVENT_ENUM.ShowMatching, this.showMatching, this);
         EventManager.Instance.on(EVENT_ENUM.HideMatching, this.hide, this);
-        EventManager.Instance.on(EVENT_ENUM.ShowVs, this.matchedSuccess, this);
+        // EventManager.Instance.on(EVENT_ENUM.ShowVs, this.matchedSuccess, this);
+
+        EventManager.Instance.on(EVENT_ENUM.ShowVs, (callback: () => void) => {
+            //  console.warn('ShowVs event received', new Error().stack); // 打印调用栈
+        
+            this.matchedSuccess(callback);
+        });
+
 
 
 
@@ -73,26 +82,36 @@ export class UIMatchManager extends Component {
 
     }
 
-    matchedSuccess() {
+    
+    
+
+    matchedSuccess(callback?: () => void) {
+
+        if (!this._thisMatchNode) {
+            this.showMatching();
+        }
+
         //今日使用次数+1
         if (UserDataManager.Instance.UserInfo && UserDataManager.Instance.UserInfo.times) {
             UserDataManager.Instance.UserInfo.times += 1;
             EventManager.Instance.emit(EVENT_ENUM.UpdateUserInfo);
         }
-
+        if (!this._matchLabel || !this._matchLabel.isValid) {
+            return;
+        }
         this._matchLabel.getComponent(Label).string = '匹配成功';
         const teamInfo = GameDataManager.Instance.VsTeamInfo;
-        if (!teamInfo) {
-            console.error('VsTeamInfo is null');
-            this.hide();
-            return;
-        }
-        const enemyTeamIndex = GameDataManager.Instance?.EnemyTeamIndex;
-        if (enemyTeamIndex === undefined || !teamInfo[enemyTeamIndex]) {
-            console.error('Team index or team info is invalid');
-            this.hide();
-            return;
-        }
+        // if (!teamInfo) {
+        //     console.error('VsTeamInfo is null');
+        //     this.hide();
+        //     return;
+        // }
+        // const enemyTeamIndex = GameDataManager.Instance?.EnemyTeamIndex;
+        // if (enemyTeamIndex === undefined || !teamInfo[enemyTeamIndex]) {
+        //     console.error('Team index or team info is invalid');
+        //     this.hide();
+        //     return;
+        // }
 
         const enemyNode = this._thisMatchRootNode.getChildByName('teamAndCountdown').getChildByName('team').getChildByName('red');
         this._redTeamContent = enemyNode.getChildByName('node').getChildByName('rewardScrollV').getChildByName('view').getChildByName('content');
@@ -115,8 +134,15 @@ export class UIMatchManager extends Component {
                 .start();
         }
 
+            console.warn('VSManager 动画播放');
+            // 标记已进入游戏界面
+        GameDataManager.Instance.setInGameUI(true);
         this.showAnim(this._blueNode, this._redNode, VsNode, () => {
             EventManager.Instance.emit(EVENT_ENUM.ShowPKGame);
+            // 动画完成后调用回调
+            if (callback) {
+                callback();
+            }
         });
 
 
@@ -207,6 +233,10 @@ export class UIMatchManager extends Component {
                         playAnimation();
                     } else {
                         this._currentRepeat = 0;
+                        const parentNode = this._thisMatchNode.getChildByName('Root')?.parent;
+                        if (parentNode) {
+                            parentNode.destroy();
+                        }
                         if (onComplete) onComplete();
                     }
                 })
@@ -243,8 +273,8 @@ export class UIMatchManager extends Component {
         const teamInfoCount = this._redNode.getChildByName('count');
         teamInfoCount.active = true;
         const teamCountLabel = teamInfoCount.getChildByName('value').getComponent(Label);
-        nameLabel.string = teamInfo.name;
-        teamCountLabel.string = `${teamInfo.count}/${teamInfo.maxcount}`;
+        nameLabel.string = teamInfo ? teamInfo.name : '敌方队伍';
+        teamCountLabel.string = `${teamInfo ? teamInfo.count : 1}/${teamInfo ? teamInfo.maxcount : 20}`;
 
         const avatarUrl = UserDataManager.Instance.UserInfo.user.avatar + IMG_URL_EXTRA_PARAM;
         const blueTeamMembers = Array(3).fill({ iconUrl: avatarUrl });
@@ -259,10 +289,6 @@ export class UIMatchManager extends Component {
             });
             this._redTeamContent.addChild(memberHeadIconCellPrefabb);
         }
-
-
-
-
 
     }
 
@@ -284,9 +310,9 @@ export class UIMatchManager extends Component {
             this.hide(); // 或者直接销毁
         }
         matchNode = instantiate(this.UIMathingPrefabb);
+        this._thisMatchNode = matchNode;
         const rootBgNode = matchNode.getChildByName('Root').getChildByName('bg');
         this._thisMatchRootNode = rootBgNode;
-        this._thisMatchNode = matchNode;
         this._thisCloseMatchNode = matchNode.getChildByName('Root').getChildByName('close');
         this._matchLabel = rootBgNode.getChildByName('teamAndCountdown').getChildByName('countDown').getChildByName('label');
         this._timeLabel = rootBgNode.getChildByName('teamAndCountdown').getChildByName('countDown').getChildByName('value');
@@ -342,22 +368,37 @@ export class UIMatchManager extends Component {
             this.createPointAnimation();
         }, 0.1); // 延迟0.5秒开始动画
 
+        // this.scheduleOnce(() => {
+        //     this.matchedSuccess();
+        // }, 5);
+
         // this.createPointAnimation();
 
 
     }
 
     countDownTime() {
-        const countDown = () => {
-            if (this._countdownNum <= 0) {
-                this.hide();
+        if (this._countdownTimer) {
+            clearInterval(this._countdownTimer);
+        }
+
+        this._countdownTimer = setInterval(() => {
+            // 检查节点是否有效
+            if (!this._timeLabel?.isValid) {
+                clearInterval(this._countdownTimer);
+                this._countdownTimer = null;
                 return;
             }
+
             this._countdownNum--;
             this._timeLabel.getComponent(Label).string = this._countdownNum + 's';
 
-        }
-        this.schedule(countDown, 1);
+            if (this._countdownNum <= 0) {
+                clearInterval(this._countdownTimer);
+                this._countdownTimer = null;
+                this.hide();
+            }
+        }, 1000);
 
     }
 
@@ -439,6 +480,10 @@ export class UIMatchManager extends Component {
     }
 
     protected onDestroy(): void {
+        if (this._countdownTimer) {
+            clearInterval(this._countdownTimer);
+            this._countdownTimer = null;
+        }
         // 停止所有动画
         if (this._animationTween) {
             this._animationTween.stop();

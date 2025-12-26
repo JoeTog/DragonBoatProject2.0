@@ -2,7 +2,7 @@
   "ver": "1.0.27",
   "importer": "image",
   "imported": true,
-  "uuid": "6c33566f-32b7-4957-8f22-0e62395ef936",
+  "uuid": "74c8d618-379e-493b-b267-216d0ba81141",
   "files": [
     ".json",
     ".png"
@@ -10,14 +10,14 @@
   "subMetas": {
     "6c48a": {
       "importer": "texture",
-      "uuid": "6c33566f-32b7-4957-8f22-0e62395ef936@6c48a",
-      "displayName": "计时总武力值",
+      "uuid": "74c8d618-379e-493b-b267-216d0ba81141@6c48a",
+      "displayName": "20秒倒计时框",
       "id": "6c48a",
       "name": "texture",
       "userData": {
         "wrapModeS": "clamp-to-edge",
         "wrapModeT": "clamp-to-edge",
-        "imageUuidOrDatabaseUri": "6c33566f-32b7-4957-8f22-0e62395ef936",
+        "imageUuidOrDatabaseUri": "74c8d618-379e-493b-b267-216d0ba81141",
         "isUuid": true,
         "visible": false,
         "minfilter": "linear",
@@ -34,8 +34,8 @@
     },
     "f9941": {
       "importer": "sprite-frame",
-      "uuid": "6c33566f-32b7-4957-8f22-0e62395ef936@f9941",
-      "displayName": "计时总武力值",
+      "uuid": "74c8d618-379e-493b-b267-216d0ba81141@f9941",
+      "displayName": "20秒倒计时框",
       "id": "f9941",
       "name": "spriteFrame",
       "userData": {
@@ -45,10 +45,10 @@
         "offsetY": 0,
         "trimX": 0,
         "trimY": 0,
-        "width": 549,
-        "height": 74,
-        "rawWidth": 549,
-        "rawHeight": 74,
+        "width": 109,
+        "height": 45,
+        "rawWidth": 109,
+        "rawHeight": 45,
         "borderTop": 0,
         "borderBottom": 0,
         "borderLeft": 0,
@@ -60,17 +60,17 @@
         "meshType": 0,
         "vertices": {
           "rawPosition": [
-            -274.5,
-            -37,
+            -54.5,
+            -22.5,
             0,
-            274.5,
-            -37,
+            54.5,
+            -22.5,
             0,
-            -274.5,
-            37,
+            -54.5,
+            22.5,
             0,
-            274.5,
-            37,
+            54.5,
+            22.5,
             0
           ],
           "indexes": [
@@ -83,12 +83,12 @@
           ],
           "uv": [
             0,
-            74,
-            549,
-            74,
+            45,
+            109,
+            45,
             0,
             0,
-            549,
+            109,
             0
           ],
           "nuv": [
@@ -102,18 +102,18 @@
             1
           ],
           "minPos": [
-            -274.5,
-            -37,
+            -54.5,
+            -22.5,
             0
           ],
           "maxPos": [
-            274.5,
-            37,
+            54.5,
+            22.5,
             0
           ]
         },
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "6c33566f-32b7-4957-8f22-0e62395ef936@6c48a",
+        "imageUuidOrDatabaseUri": "74c8d618-379e-493b-b267-216d0ba81141@6c48a",
         "atlasUuid": "",
         "trimType": "auto"
       },
@@ -129,6 +129,6 @@
     "type": "sprite-frame",
     "hasAlpha": true,
     "fixAlphaTransparencyArtifacts": false,
-    "redirect": "6c33566f-32b7-4957-8f22-0e62395ef936@6c48a"
+    "redirect": "74c8d618-379e-493b-b267-216d0ba81141@6c48a"
   }
 }

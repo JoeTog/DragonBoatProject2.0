@@ -27,8 +27,9 @@ export class UseRender extends Component {
         const node = instantiate(this.userIcon);
         const config = BAG_CONFIG[bagId];
         // let icon_url = 'Texture/bag/icon/' + config[1] + '/spriteFrame'
-        let icon_url = `Texture/bag/icon/${config[1]}/spriteFrame`;
-        resAssetLoad<SpriteFrame>(icon_url,SpriteFrame).then(res => {
+        // let icon_url = `Texture/bag/icon/${config[1]}/spriteFrame`;
+        let icon_urll = `Texture/2.0/5游戏商店/道具图片/112x114/${config[1]}/spriteFrame`;
+        resAssetLoad<SpriteFrame>(icon_urll,SpriteFrame).then(res => {
             node.getComponent(Sprite).spriteFrame = res;
             this.containNode.addChild(node);
         }).catch((err) => {

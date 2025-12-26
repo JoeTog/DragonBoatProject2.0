@@ -116,7 +116,7 @@ export class PkGameManager extends Component {
     }
 
     doSender() {
-
+        console.log('doSender');
         //播放背景音乐
         AudioBGMManager.Instance.play(MUSIC_PATH_ENUM.game_bg,ConfigManager.Instance.personalSetting.musicBGMVolume).catch(err => {
             console.warn('播放游戏中背景音乐失败:', err);
@@ -182,39 +182,55 @@ export class PkGameManager extends Component {
     }
 
     InfiniteMove(moveNode: Node, speed: number) {
-        if (!moveNode || !moveNode.children) {
-            return;
+    if (!moveNode?.children) return;
+
+    // 1. 找出所有需要重置的节点
+    const nodesToReset: {node: Node, height: number}[] = [];
+    let maxY = -Infinity;
+
+    // 第一遍：收集需要重置的节点和最大Y值
+    moveNode.children.forEach((child: Node) => {
+        const uiTransform = child.getComponent(UITransform);
+        if (!uiTransform) return;
+
+        const height = uiTransform.height;
+        const newY = child.position.y - speed;
+        
+        // 更新最大Y值（只考虑未移出屏幕的节点）
+        if (newY + height > 0) {
+            maxY = Math.max(maxY, newY + height);
         }
-        let maxY = 0;//放置的最高点
-        let resetNode: Node = null;//重新放置的node
 
-        moveNode.children.forEach((child: Node) => {
-            const currentPostion = child.position;
-            const nodeH = child.getComponent(UITransform)?.contentSize.height;
-            if (maxY < currentPostion.y) {
-                maxY = currentPostion.y;
-            }
-            child.setPosition(currentPostion.x, currentPostion.y - speed, currentPostion.z);
-            if (!nodeH) {
-                return;
-            }
-            // if (currentPostion.y + nodeH < 0) {
-            //     resetNode = child;
-            // }
-            if (nodeH && (currentPostion.y - speed + nodeH < 0)) {
-                resetNode = child;
-            }
+        // 检查是否需要重置
+        if (newY + height <= 0) {
+            nodesToReset.push({
+                node: child,
+                height: height
+            });
+        } else {
+            // 正常移动节点
+            child.setPosition(child.position.x, newY, child.position.z);
+        }
+    });
 
+    // 第二遍：重置需要移动的节点
+    if (nodesToReset.length > 0) {
+        // 计算新的Y位置（当前最高点的Y坐标）
+        const newY = maxY > 0 ? maxY : 0;
+        
+        nodesToReset.forEach(({node, height}) => {
+            // 将节点放置在当前最高点的上方
+            node.setPosition(
+                node.position.x,
+                newY,
+                node.position.z
+            );
+            
+            // 更新最大Y值为新放置节点的底部
+            maxY = newY + height;
         });
-
-        if (resetNode) {
-            const postion = resetNode.position;
-            const nodeH = resetNode.getComponent(UITransform)?.contentSize.height;
-            resetNode.setPosition(postion.x, maxY + nodeH, postion.z);
-
-        }
-
     }
+}
 
 
 
@@ -223,7 +239,7 @@ export class PkGameManager extends Component {
         if (!GameDataManager.Instance.InPlaying) {
             return;
         }
-        const sp = this.moveSpeed * deltaTime;
+        let sp = this.moveSpeed * deltaTime;
         if (this.moveSpeed >= 300) {
             this.boatSetAnim(BoatMoveSke.FAST);
         }

@@ -13,8 +13,10 @@ import { MsgTaskStart } from './room/MsgTaskStart';
 import { ReqAddPower, ResAddPower } from './room/PtlAddPower';
 import { ReqGetRoomInfo, ResGetRoomInfo } from './room/PtlGetRoomInfo';
 import { ReqBuyItem, ResBuyItem } from './shop/PtlBuyItem';
+import { ReqDoSynthesis, ResDoSynthesis } from './shop/PtlDoSynthesis';
 import { ReqExchangePoint, ResExchangePoint } from './shop/PtlExchangePoint';
 import { ReqGetItemList, ResGetItemList } from './shop/PtlGetItemList';
+import { ReqGetSynthesisRecipe, ResGetSynthesisRecipe } from './shop/PtlGetSynthesisRecipe';
 import { ReqMergeItem, ResMergeItem } from './shop/PtlMergeItem';
 import { ReqUseItem, ResUseItem } from './shop/PtlUseItem';
 import { MsgMatchFail } from './team/MsgMatchFail';
@@ -72,6 +74,10 @@ export interface ServiceType {
             req: ReqBuyItem,
             res: ResBuyItem
         },
+        "shop/DoSynthesis": {
+            req: ReqDoSynthesis,
+            res: ResDoSynthesis
+        },
         "shop/ExchangePoint": {
             req: ReqExchangePoint,
             res: ResExchangePoint
@@ -79,6 +85,10 @@ export interface ServiceType {
         "shop/GetItemList": {
             req: ReqGetItemList,
             res: ResGetItemList
+        },
+        "shop/GetSynthesisRecipe": {
+            req: ReqGetSynthesisRecipe,
+            res: ResGetSynthesisRecipe
         },
         "shop/MergeItem": {
             req: ReqMergeItem,
@@ -198,7 +208,7 @@ export interface ServiceType {
 }
 
 export const serviceProto: ServiceProto<ServiceType> = {
-    "version": 16,
+    "version": 22,
     "services": [
         {
             "id": 0,
@@ -284,6 +294,11 @@ export const serviceProto: ServiceProto<ServiceType> = {
             }
         },
         {
+            "id": 50,
+            "name": "shop/DoSynthesis",
+            "type": "api"
+        },
+        {
             "id": 14,
             "name": "shop/ExchangePoint",
             "type": "api",
@@ -298,6 +313,11 @@ export const serviceProto: ServiceProto<ServiceType> = {
             "conf": {
                 "needLogin": true
             }
+        },
+        {
+            "id": 51,
+            "name": "shop/GetSynthesisRecipe",
+            "type": "api"
         },
         {
             "id": 16,
@@ -1112,10 +1132,24 @@ export const serviceProto: ServiceProto<ServiceType> = {
                                 }
                             },
                             {
+                                "id": 3,
+                                "type": {
+                                    "type": "Literal",
+                                    "literal": "completed"
+                                }
+                            },
+                            {
                                 "id": 2,
                                 "type": {
                                     "type": "Literal",
                                     "literal": "failed"
+                                }
+                            },
+                            {
+                                "id": 4,
+                                "type": {
+                                    "type": "Literal",
+                                    "literal": "eliminated"
                                 }
                             }
                         ]
@@ -1266,6 +1300,13 @@ export const serviceProto: ServiceProto<ServiceType> = {
                                     "type": {
                                         "type": "Number"
                                     }
+                                },
+                                {
+                                    "id": 3,
+                                    "name": "maxcount",
+                                    "type": {
+                                        "type": "Number"
+                                    }
                                 }
                             ]
                         }
@@ -1302,7 +1343,7 @@ export const serviceProto: ServiceProto<ServiceType> = {
                         "type": "Union",
                         "members": [
                             {
-                                "id": 0,
+                                "id": 2,
                                 "type": {
                                     "type": "Interface",
                                     "properties": [
@@ -1317,7 +1358,44 @@ export const serviceProto: ServiceProto<ServiceType> = {
                                             "id": 1,
                                             "name": "status",
                                             "type": {
-                                                "type": "String"
+                                                "type": "Union",
+                                                "members": [
+                                                    {
+                                                        "id": 0,
+                                                        "type": {
+                                                            "type": "Literal",
+                                                            "literal": "active"
+                                                        }
+                                                    },
+                                                    {
+                                                        "id": 1,
+                                                        "type": {
+                                                            "type": "Literal",
+                                                            "literal": "rest"
+                                                        }
+                                                    },
+                                                    {
+                                                        "id": 2,
+                                                        "type": {
+                                                            "type": "Literal",
+                                                            "literal": "completed"
+                                                        }
+                                                    },
+                                                    {
+                                                        "id": 3,
+                                                        "type": {
+                                                            "type": "Literal",
+                                                            "literal": "failed"
+                                                        }
+                                                    },
+                                                    {
+                                                        "id": 4,
+                                                        "type": {
+                                                            "type": "Literal",
+                                                            "literal": "eliminated"
+                                                        }
+                                                    }
+                                                ]
                                             }
                                         },
                                         {
@@ -1915,6 +1993,71 @@ export const serviceProto: ServiceProto<ServiceType> = {
                 }
             ]
         },
+        "shop/PtlDoSynthesis/ReqDoSynthesis": {
+            "type": "Interface",
+            "properties": [
+                {
+                    "id": 0,
+                    "name": "targetItemId",
+                    "type": {
+                        "type": "Number"
+                    }
+                }
+            ]
+        },
+        "shop/PtlDoSynthesis/ResDoSynthesis": {
+            "type": "Interface",
+            "properties": [
+                {
+                    "id": 0,
+                    "name": "success",
+                    "type": {
+                        "type": "Boolean"
+                    }
+                },
+                {
+                    "id": 1,
+                    "name": "resultItem",
+                    "type": {
+                        "type": "Reference",
+                        "target": "shop/PtlDoSynthesis/ResSynthesisResult"
+                    }
+                },
+                {
+                    "id": 2,
+                    "name": "msg",
+                    "type": {
+                        "type": "String"
+                    }
+                }
+            ]
+        },
+        "shop/PtlDoSynthesis/ResSynthesisResult": {
+            "type": "Interface",
+            "properties": [
+                {
+                    "id": 0,
+                    "name": "itemId",
+                    "type": {
+                        "type": "Number"
+                    }
+                },
+                {
+                    "id": 1,
+                    "name": "itemName",
+                    "type": {
+                        "type": "String"
+                    }
+                },
+                {
+                    "id": 2,
+                    "name": "count",
+                    "type": {
+                        "type": "Number"
+                    }
+                }
+            ]
+        },
         "shop/PtlExchangePoint/ReqExchangePoint": {
             "type": "Interface",
             "extends": [
@@ -2056,6 +2199,137 @@ export const serviceProto: ServiceProto<ServiceType> = {
                 {
                     "id": 5,
                     "name": "status",
+                    "type": {
+                        "type": "Number"
+                    }
+                }
+            ]
+        },
+        "shop/PtlGetSynthesisRecipe/ReqGetSynthesisRecipe": {
+            "type": "Interface",
+            "properties": [
+                {
+                    "id": 0,
+                    "name": "targetItemId",
+                    "type": {
+                        "type": "Number"
+                    }
+                }
+            ]
+        },
+        "shop/PtlGetSynthesisRecipe/ResGetSynthesisRecipe": {
+            "type": "Interface",
+            "properties": [
+                {
+                    "id": 0,
+                    "name": "canSynthesize",
+                    "type": {
+                        "type": "Boolean"
+                    }
+                },
+                {
+                    "id": 1,
+                    "name": "recipe",
+                    "type": {
+                        "type": "Reference",
+                        "target": "shop/PtlGetSynthesisRecipe/SynthesisRecipe"
+                    },
+                    "optional": true
+                },
+                {
+                    "id": 2,
+                    "name": "msg",
+                    "type": {
+                        "type": "String"
+                    },
+                    "optional": true
+                }
+            ]
+        },
+        "shop/PtlGetSynthesisRecipe/SynthesisRecipe": {
+            "type": "Interface",
+            "properties": [
+                {
+                    "id": 0,
+                    "name": "materials",
+                    "type": {
+                        "type": "Array",
+                        "elementType": {
+                            "type": "Reference",
+                            "target": "shop/PtlGetSynthesisRecipe/SynthesisMaterial"
+                        }
+                    }
+                },
+                {
+                    "id": 1,
+                    "name": "resultItem",
+                    "type": {
+                        "type": "Reference",
+                        "target": "shop/PtlGetSynthesisRecipe/SynthesisResultItem"
+                    }
+                },
+                {
+                    "id": 2,
+                    "name": "successRate",
+                    "type": {
+                        "type": "Number"
+                    }
+                }
+            ]
+        },
+        "shop/PtlGetSynthesisRecipe/SynthesisMaterial": {
+            "type": "Interface",
+            "properties": [
+                {
+                    "id": 0,
+                    "name": "itemId",
+                    "type": {
+                        "type": "Number"
+                    }
+                },
+                {
+                    "id": 1,
+                    "name": "itemName",
+                    "type": {
+                        "type": "String"
+                    }
+                },
+                {
+                    "id": 2,
+                    "name": "count",
+                    "type": {
+                        "type": "Number"
+                    }
+                },
+                {
+                    "id": 3,
+                    "name": "owned",
+                    "type": {
+                        "type": "Number"
+                    }
+                }
+            ]
+        },
+        "shop/PtlGetSynthesisRecipe/SynthesisResultItem": {
+            "type": "Interface",
+            "properties": [
+                {
+                    "id": 0,
+                    "name": "itemId",
+                    "type": {
+                        "type": "Number"
+                    }
+                },
+                {
+                    "id": 1,
+                    "name": "itemName",
+                    "type": {
+                        "type": "String"
+                    }
+                },
+                {
+                    "id": 2,
+                    "name": "count",
                     "type": {
                         "type": "Number"
                     }

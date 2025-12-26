@@ -14,7 +14,8 @@ export interface ResGetRoomInfo extends BaseResponse {
     info:{
         name:string,
         avatar:string,
-        count:number
+        count:number,
+        maxcount:number
     }[]
 
     //  时间同步字段：解决锁屏、网络波动导致的时间不同步问题
@@ -29,7 +30,8 @@ export interface ResGetRoomInfo extends BaseResponse {
     /**当前任务状态 */
     currentTask?: {
         taskIndex: number;
-        status: string;
+        /** 任务状态 */
+        status: 'active' | 'rest' | 'completed' | 'failed' | 'eliminated';  // eliminated: 已淘汰
         duration: number;
         targetSwipes: number;
         currentSwipes: number;

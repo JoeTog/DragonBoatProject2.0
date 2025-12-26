@@ -9,7 +9,7 @@ export default class GameConfig {
     // const ws_url = 'wss://47.103.128.46:8085';
     // const ws_url = 'wss://74.120.174.141:3005';
     // public static ws_url = 'wss://127.0.0.1:3005';
-
+    
     // public static ws_url = 'ws://106.14.224.14:3008';
 
     //测试

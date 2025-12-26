@@ -233,3 +233,15 @@ export enum systemMessageType {
     /** 达到游戏次数阈值，难度提升提醒 */
     reach_min_games  = "reach_min_games "
 }
+
+//游戏逻辑
+export enum GameStatus {
+    NORMAL = 0,      // 正常游戏（加入队伍后设置为正常游戏）
+    RECONNECT = 1,   // 断线重连（当网络出现断线后设置为这，执行完重连操作设置为NORMAL）
+    RESTART = 2      // 游戏重启 (第一次进游戏设置 设置为这里后 收到游戏消息 即判断为重连执行完重连操作设置为NORMAL）
+}
+
+
+
+
+

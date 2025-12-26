@@ -6,10 +6,11 @@ import { BigNumUtils, loadAvatar, truncateString } from '../../Base/Utils';
 import { IMG_URL_EXTRA_PARAM } from '../../Config';
 import UserDataManager from '../../Data/UserDataManager';
 import EventManager from '../../Base/EventManager';
-import { EVENT_ENUM } from '../../Data/Enum';
+import { EVENT_ENUM, GameStatus } from '../../Data/Enum';
 import { UIButtonUtil } from '../../Base/UIButtonUtil';
 import { ToastManager } from '../UI/ToastManager';
 import { ReqPing } from '../../Net/Shared/protocols/common/ReqPing';
+import { GameDataManager } from '../../Data/GameDatamanager';
 const { ccclass, property } = _decorator;
 
 @ccclass('TeammembersRender')
@@ -66,6 +67,9 @@ export class TeammembersRender extends Component {
         } else {
             this.powerTotalNode.active = false;
         }
+
+        GameDataManager.Instance.setGameStatus(GameStatus.NORMAL);
+
 
     }
 

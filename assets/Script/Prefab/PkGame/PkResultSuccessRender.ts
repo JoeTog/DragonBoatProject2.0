@@ -56,6 +56,7 @@ export class PkResultSuccessRender extends Component {
         this._teamNameLabel.string = truncateStringCutIndex(TeamInfoManager.Instance.TeamInfo.name ? TeamInfoManager.Instance.TeamInfo.name : '获取队伍名失败', 6);
 
         this.doRender();
+        GameDataManager.Instance.setInGameUI(false);
 
         UIButtonUtil.initBtn(this.popBtnNode, () => {
             GameDataManager.Instance._reset();

@@ -4,8 +4,9 @@ import Singleton from '../Base/Singleton';
 import { WsConfig } from '../Config';
 import Listenmsgmanager from './Listenmsgmanager';
 import EventManager from '../Base/EventManager';
-import { EVENT_ENUM } from '../Data/Enum';
+import { EVENT_ENUM, GameStatus } from '../Data/Enum';
 import { JoeFunc } from '../Base/JoeFunc';
+import { GameDataManager } from '../Data/GameDatamanager';
 
 
 
@@ -98,6 +99,7 @@ export class TsRpc extends Singleton {
         // 监听连接断开事件
         this.clientService.flows.postDisconnectFlow.push(v => {
             console.warn('【网络断开】连接已断开', v);
+            GameDataManager.Instance.setGameStatus(GameStatus.RECONNECT);
             this.onDisconnect();
             return v;
         });

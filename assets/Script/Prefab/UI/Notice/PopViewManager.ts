@@ -35,6 +35,9 @@ export class PopViewManager extends Component {
     private contentNode: Node = null;
 
     public messageText: string = '';
+    public _confirmText: string = '使用复活药水';
+    public _cancelText: string = '返回';
+
     public showItemList: EnrichedBagItem[] = [];//背包合成
 
     // public confirmLabel :Label = null;
@@ -47,6 +50,8 @@ export class PopViewManager extends Component {
         // this.confirmLabel = popNode.getChildByName('BtnConfirm').getChildByName('label').getComponent(Label);
         // console.log('confirmLabel = ',this.confirmLabel);
         
+        this.confirmLabel.string = this._confirmText;
+        // this.cancelLabel.string = this._confirmText;
         const closeNode = this.node.getChildByName('close');
         UIButtonUtil.initBtn(closeNode, () => {
             this.node.destroy();

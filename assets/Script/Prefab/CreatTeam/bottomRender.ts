@@ -5,12 +5,13 @@ import { UIButtonUtil } from '../../Base/UIButtonUtil';
 import { TsRpc } from '../../Net/TsRpc';
 import { ToastManager } from '../UI/ToastManager';
 import EventManager from '../../Base/EventManager';
-import { EVENT_ENUM } from '../../Data/Enum';
+import { EVENT_ENUM, GameStatus } from '../../Data/Enum';
 import { MsgTeamStatusChange } from '../../Net/Shared/protocols/team/MsgTeamStatusChange';
 import { PopViewManager } from '../UI/Notice/PopViewManager';
 import { BAG_CONFIG } from '../../Config';
 import { EnrichedBagItem } from '../../Net/Shared/models/Interfaces';
 import { loadingManager } from '../UI/LoadingManager';
+import { GameDataManager } from '../../Data/GameDatamanager';
 const { ccclass, property } = _decorator;
 
 
@@ -77,6 +78,7 @@ export class bottomRender extends Component {
 
     //收到队伍状态改变
     teamStatusChange(msg: MsgTeamStatusChange) {
+        GameDataManager.Instance.setGameStatus(GameStatus.NORMAL);
         if (msg.status == 1) {
             // 队长开启了匹配  队长队员都会收到1
             if (!this.IsMatching) {

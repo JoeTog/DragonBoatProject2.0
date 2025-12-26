@@ -4,5 +4,6 @@ export interface MsgTaskRecover {
     targetSwipes: number;
     currentSwipes: number;
     remainingTime: number;
-    status: 'active' | 'rest' | 'failed';
+    /** 任务状态 */
+    status: 'active' | 'rest' | 'completed' | 'failed' | 'eliminated';  // eliminated: 已淘汰
 }

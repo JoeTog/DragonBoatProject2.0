@@ -82,12 +82,12 @@ export class UserCardRender extends Component {
         //     });
         // })
 
-        
+
         UIButtonUtil.initBtn(this.copyBtnNode, () => {
             let ret = JoeFunc.copyToClipboard(UserDataManager.Instance.UserInfo.player_code);
             if (ret) {
                 ToastManager.showToast('复制成功');
-            }   
+            }
         });
 
         //点击头像可查看记录
@@ -177,9 +177,10 @@ export class UserCardRender extends Component {
         if (!this.avatar_img.spriteFrame || !this.avatar_img) {
             this.avatar_img = this.node.getChildByName('userinfo').getChildByName('avatar').getChildByName('mask').getChildByName('img').getComponent(Sprite);
         }
+
         loadAvatar(avatar + IMG_URL_EXTRA_PARAM).then((res: SpriteFrame) => {
-            if (this.avatar_img.spriteFrame) {
-            this.avatar_img.spriteFrame = res;
+            if (this.avatar_img?.spriteFrame) {
+                this.avatar_img.spriteFrame = res;
             }
         })
 

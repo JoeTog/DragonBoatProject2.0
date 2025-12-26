@@ -1,7 +1,7 @@
-import { _decorator, Component, director, EventTouch, Label, Node, Tween, tween, UIOpacity, Vec2 } from 'cc';
+import { _decorator, BlockInputEvents, Button, Component, director, EventTouch, Label, Node, Tween, tween, UIOpacity, Vec2 } from 'cc';
 import UserDataManager from '../../Data/UserDataManager';
 import EventManager from '../../Base/EventManager';
-import { EVENT_ENUM, TaskType } from '../../Data/Enum';
+import { EVENT_ENUM, GameStatus, TaskType } from '../../Data/Enum';
 import { GameDataManager } from '../../Data/GameDatamanager';
 import { TsRpc } from '../../Net/TsRpc';
 import { ToastManager } from '../UI/ToastManager';
@@ -80,8 +80,8 @@ export class OperatorRender extends Component {
 
 
         this._slidingAreaNode = this.node.getChildByName('slidingArea');
-        this._taskLabel = this.node.getChildByName('task').getChildByName('label').getComponent(Label);
-        this._directionTipLabel = this.node.getChildByName('direction_tip').getChildByName('label').getComponent(Label);
+        this._taskLabel = this.node.getChildByName('task').getChildByName('taskInfo').getChildByName('label').getComponent(Label);
+        this._directionTipLabel = this.node.getChildByName('task').getChildByName('direction_tip').getChildByName('label').getComponent(Label);
         this._slidingAreaNode.on(Node.EventType.TOUCH_START, this.onTouchStart, this);
         this._slidingAreaNode.on(Node.EventType.TOUCH_END, this.onTouchEnd, this);
         this._slidingAreaNode.on(Node.EventType.TOUCH_CANCEL, this.onTouchCancel, this);
@@ -99,7 +99,9 @@ export class OperatorRender extends Component {
         // UIButtonUtil.initBtn(this.testBtn, () => {
         //     ToastManager.showToast('交互正常!!!');
         // });
-        
+
+
+        this.schedule(this.checkStatus, 2);
 
     }
 
@@ -232,6 +234,27 @@ export class OperatorRender extends Component {
         this.scheduleOnce(this._touchTimeoutCallback, this.TOUCH_TIMEOUT / 1000);
     }
 
+    offSlidingAreaNodeTouch() {
+        
+        if (this._slidingAreaNode && this._slidingAreaNode.isValid) {
+            this._slidingAreaNode.off(Node.EventType.TOUCH_START, this.onTouchStart, this);
+            this._slidingAreaNode.off(Node.EventType.TOUCH_END, this.onTouchEnd, this);
+            this._slidingAreaNode.off(Node.EventType.TOUCH_CANCEL, this.onTouchCancel, this);
+            this._slidingAreaNode.off(Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
+        }
+    }
+
+    onSlidingAreaNodeTouch() {
+        
+        if (this._slidingAreaNode && this._slidingAreaNode.isValid) {
+            this._slidingAreaNode.on(Node.EventType.TOUCH_START, this.onTouchStart, this);
+            this._slidingAreaNode.on(Node.EventType.TOUCH_END, this.onTouchEnd, this);
+            this._slidingAreaNode.on(Node.EventType.TOUCH_CANCEL, this.onTouchCancel, this);
+            this._slidingAreaNode.on(Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
+        }
+    }
+
+
     private detachSlidingAreaListeners() {
         console.log('滑动监听被取消');
         // 清理超时定时器
@@ -285,7 +308,7 @@ export class OperatorRender extends Component {
             return;
         }
         this.lastSwipeTime = now;
-        
+
         // 安全检查：确保触摸位置有效
         if (!this._touchStartPos || !this._touchEndPos) {
             console.warn('⚠️ [滑动处理] 触摸位置无效，忽略滑动', {
@@ -296,7 +319,7 @@ export class OperatorRender extends Component {
             return;
         }
         console.log("处理滑动事件 InPlaying:" + `${GameDataManager.Instance.InPlaying}` + ' tasktype:' + `${GameDataManager.Instance.TaskType}` + ' end:' + `${this._touchEndPos}` + ' start:' + `${this._touchStartPos}`);
-        
+
         if (!GameDataManager.Instance.InPlaying) {
             console.log('❌️ 【滑动处理】 游戏未开始，忽略滑动');
             this.resetTouchState();
@@ -400,10 +423,37 @@ export class OperatorRender extends Component {
                 ToastManager.showToast('后台返回淘汰:' + data.err.message);
                 // GameDataManager.Instance.dealRoomDie();
                 return;
+            }else {
+                if (data.res.value && data.res.value == 0) {
+                    //addpower失败了,请求当前状态,
+                    this.checkStatus();
+                }
             }
         }).catch(err => {
             console.error(`🔥 [武力值] API调用异常:`, err);
         });
+    }
+
+    private async checkStatus() {
+        const pk_info = await TsRpc.Instance.Client.callApi("room/GetRoomInfo", { __ssoToken: UserDataManager.Instance.SsoToken });
+        console.log('检查 pk_info = ', pk_info);
+        if (pk_info.isSucc && pk_info.res?.currentTask?.status === 'eliminated' && GameDataManager.Instance.TaskType != TaskType.failed) {
+            GameDataManager.Instance.dealRoomDie();
+            if (pk_info.res.currentTask) {
+                GameDataManager.Instance.dealTaskCountDown(pk_info.res.currentTask);
+            }
+        } else if (pk_info.isSucc) {
+            GameDataManager.Instance.setGameStatus(GameStatus.NORMAL);
+        }else if (!pk_info.isSucc && pk_info.err.message.includes('未找到玩家或玩家未在队伍中')) {
+            GameDataManager.Instance.setGameStatus(GameStatus.NORMAL);
+        }
+        else if (!pk_info.isSucc && pk_info.err.message.includes('WebSocket is not connected')) {
+            GameDataManager.Instance.setGameStatus(GameStatus.RECONNECT);
+        }
+        else {
+            // this.unschedule(this.checkStatus);
+
+        }
     }
 
     private canRequestAddPower(): boolean {
@@ -452,6 +502,9 @@ export class OperatorRender extends Component {
     */
     private setArrowNode(nodeIndex: number, direction: Direction) {
         //获取这个方向的角度
+        // this._slidingAreaNode.interactable
+
+
         const angle = DirectionDataMap.get(direction).al;
         const firstChild = this._slidingAreaNode.children[0];
         if (nodeIndex == 0 && firstChild.active && firstChild.angle == angle) {
@@ -476,13 +529,19 @@ export class OperatorRender extends Component {
                 nodee.active = true;
 
                 if (nodeIndex != 0) {
+                    
+        this.offSlidingAreaNodeTouch();
+
                     let dir = this._slideDirection;
                     let opacity = uiOpacity;
                     //动画从透明到不透明 显示
                     tween(opacity)
-                        .to(0.05, { opacity: 0 })
-                        .to(0.05, { opacity: 255 })
+                        .to(0.02, { opacity: 0 })
+                        .to(0.02, { opacity: 255 })
                         .call(() => {
+
+        this.onSlidingAreaNodeTouch();
+
 
                             //修复绿色箭头
                             // if (!GameDataManager.Instance.InPlaying || GameDataManager.Instance.TaskType !== TaskType.active) {

@@ -6,7 +6,7 @@ import { TsrpcError } from 'tsrpc-browser';
 import { getUrlParam, resAssetLoad } from './Base/Utils';
 import GameConfig from './Config/GameConfig';
 import { TeamInfoManager } from './Data/TeamInfoManager';
-import { EVENT_ENUM, IPlayerSetInfo, LocalStorageKey, MUSIC_PATH_ENUM } from './Data/Enum';
+import { EVENT_ENUM, GameStatus, IPlayerSetInfo, LocalStorageKey, MUSIC_PATH_ENUM } from './Data/Enum';
 import EventManager from './Base/EventManager';
 import { AudioManager } from './Base/AudioManager';
 import { loadingManager } from './Prefab/UI/LoadingManager';
@@ -92,6 +92,7 @@ export class Start extends Component {
 
         //请求用户登陆
         console.warn('第一次登录');
+        GameDataManager.Instance.setGameStatus(GameStatus.RESTART);
         let data = null;
         if (GameConfig.ws_url.includes('test')) {
             data = await TsRpc.Instance.Client.callApi("user/Login", {
@@ -204,6 +205,8 @@ export class Start extends Component {
 
             if (userData && userData.isSucc && userData.res) {
                 UserDataManager.Instance.UserInfo = userData.res.info;
+                //这里设置为重连，如果这时候还没匹配上，则在匹配上后收到matchsuccess后会重置为normal。
+                GameDataManager.Instance.setGameStatus(GameStatus.RECONNECT);
                 ToastManager.showToast('token失效，身份验证成功请重新操作!');
                 console.warn('登陆失效，身份验证成功请重新操作!');
             } else {
