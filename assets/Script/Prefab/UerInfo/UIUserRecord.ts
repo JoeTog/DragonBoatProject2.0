@@ -155,7 +155,7 @@ export class UIUserRecord extends Component {
         resAssetLoad<SpriteFrame>(iconurl, SpriteFrame).then(res => {
             vip.spriteFrame = res;
         }).catch((err) => {
-            console.error("icon加载失败: " + err);
+            console.error("icon加载失败: " , err);
         });
         idValueLabel.string = `ID:${UserDataManager.Instance.UserInfo.player_code}`;
         UIButtonUtil.initBtn(idValueCopy, () => {
@@ -282,7 +282,7 @@ export class UIUserRecord extends Component {
         const data = await TsRpc.Instance.Client.callApi('user/UnfreezePowerRecord', { recordId: recordid, __ssoToken: UserDataManager.Instance.SsoToken })
 
         if (!data.isSucc) {
-            ToastManager.showToast(data.err.message ? '复活失败333 ' + data.err.message : '复活失败333');
+            ToastManager.showToast(data.err.message ? '复活失败333 ' + `${data.err.message}` : '复活失败333');
             return;
         }
         //复活成功 扣掉复活币

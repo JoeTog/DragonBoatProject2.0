@@ -348,7 +348,7 @@ export class UIMatchManager extends Component {
 
         this.countDownTime();
         this._matchLabel.getComponent(Label).string = '匹配中';
-        this._timeLabel.getComponent(Label).string = this._countdownNum + 's';
+        this._timeLabel.getComponent(Label).string = `${this._countdownNum}` + 's';
         let isCaptain: boolean = TeamInfoManager.Instance.IsCaptainInTeam;
         if (isCaptain && TeamInfoManager.Instance.TeamInfo.id == UserDataManager.Instance.UserInfo.uid) {
             this._thisCloseMatchNode.active = true;
@@ -391,7 +391,7 @@ export class UIMatchManager extends Component {
             }
 
             this._countdownNum--;
-            this._timeLabel.getComponent(Label).string = this._countdownNum + 's';
+            this._timeLabel.getComponent(Label).string = `${this._countdownNum}` + 's';
 
             if (this._countdownNum <= 0) {
                 clearInterval(this._countdownTimer);
@@ -410,7 +410,7 @@ export class UIMatchManager extends Component {
         }
         const data = await TsRpc.Instance.Client.callApi('team/CancelMatching', { __ssoToken: UserDataManager.Instance.SsoToken })
         if (!data.isSucc) {
-            ToastManager.showToast('取消失败 ' + data.err.message);
+            ToastManager.showToast('取消失败 ' + `${data.err.message}`);
             return;
         }
         console.log('stopMatching data = ', data);

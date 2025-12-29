@@ -156,7 +156,7 @@ export class PkGameRender extends Component {
         this.IsInRequesting = false;
         if (!data.isSucc) {
             console.log('data = ', data);
-            ToastManager.showToast(data.err.message ? '复活失败111 ' + data.err.message : '复活失败111');
+            ToastManager.showToast(data.err.message ? '复活失败: ' + `${data.err.message}`: '复活失败');
             return;
         }
         //复活成功 扣掉复活币

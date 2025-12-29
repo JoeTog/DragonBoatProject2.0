@@ -149,7 +149,6 @@ export class ShopRender extends Component {
     doRenderOne(itemGood:IShopItem) {
         const config = BAG_CONFIG[itemGood.id];
         let name = itemGood.name;
-        // let icon_urll = 'Texture/2.0/5游戏商店/道具图片/112x114/' + config[1] + '/spriteFrame';
         let icon_urll = `Texture/2.0/5游戏商店/道具图片/112x114/${config[1]}/spriteFrame`;
         const shopItemNode = instantiate(this.shopItem);
         // shopItemNode.setSiblingIndex(1);
@@ -192,12 +191,11 @@ export class ShopRender extends Component {
         this.chosedGood = item;
         const config = BAG_CONFIG[item.id];
         this.itemName.getComponent(Label).string = item.name;
-        // let icon_url = 'Texture/2.0/5游戏商店/道具图片/330x336/' + config[1] + '/spriteFrame';
         let icon_url = `Texture/2.0/5游戏商店/道具图片/330x336/${config[1]}/spriteFrame`;
         resAssetLoad<SpriteFrame>(icon_url, SpriteFrame).then(res => {
             this.iconShow.getComponent(Sprite).spriteFrame = res;
         }).catch((err) => {
-            console.error("vip图标 加载失败: " + err);
+            console.error("vip图标 加载失败: " , err);
         });
         const node = instantiate(this.labelPrefab);
         node.getComponent(Label).string = item.desc;

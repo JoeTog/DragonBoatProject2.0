@@ -333,7 +333,7 @@ export class GameDataManager extends Singleton {
             __ssoToken: UserDataManager.Instance.SsoToken
         });
         if (!userData.isSucc) {
-            ToastManager.showToast('重连获取用户信息失败' + userData.err);
+            ToastManager.showToast('重连获取用户信息失败' + `${userData.err}`);
             this.isRequestReConnect = false;
             return;
         }

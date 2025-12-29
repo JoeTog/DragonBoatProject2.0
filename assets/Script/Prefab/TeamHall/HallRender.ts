@@ -217,27 +217,27 @@ export class HallRender extends Component {
         resAssetLoad<SpriteFrame>(iconurl1, SpriteFrame).then(res => {
             capitainVipSprite.spriteFrame = res;
         }).catch((err) => {
-            console.error("vip图标 加载失败: " + err);
+            console.error("vip图标 加载失败: " , err);
         });
         resAssetLoad<SpriteFrame>(iconurl2, SpriteFrame).then(res => {
             vipNodeFirstSprite.spriteFrame = res;
         }).catch((err) => {
-            console.error("vip图标 加载失败: " + err);
+            console.error("vip图标 加载失败: " , err);
         });
         resAssetLoad<SpriteFrame>(iconurl3, SpriteFrame).then(res => {
             vipNodeSecSprite.spriteFrame = res;
         }).catch((err) => {
-            console.error("vip图标 加载失败: " + err);
+            console.error("vip图标 加载失败: " , err);
         });
         resAssetLoad<SpriteFrame>(iconurl4, SpriteFrame).then(res => {
             vipNodeThreeSprite.spriteFrame = res;
         }).catch((err) => {
-            console.error("vip图标 加载失败: " + err);
+            console.error("vip图标 加载失败: " , err);
         });
         resAssetLoad<SpriteFrame>(iconurl5, SpriteFrame).then(res => {
             vipNodeFouthSprite.spriteFrame = res;
         }).catch((err) => {
-            console.error("vip图标 加载失败: " + err);
+            console.error("vip图标 加载失败: " , err);
         });
 
         // nameLabel.string = data.name;

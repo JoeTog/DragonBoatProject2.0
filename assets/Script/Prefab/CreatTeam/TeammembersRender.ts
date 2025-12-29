@@ -117,7 +117,6 @@ export class TeammembersRender extends Component {
             return;
         }
         const userInfo = UserDataManager.Instance.UserInfo;
-        // let needUpdateName = "member" + userInfo.uid;
         let needUpdateName = `member${userInfo.uid}`;
         for (let i = 0; i < this.contentView.children.length; i++) {
             const element = this.contentView.children[i];
@@ -352,12 +351,11 @@ export class TeammembersRender extends Component {
         const data = await TsRpc.Instance.Client.callApi('team/Kick', { uid: memberid, __ssoToken: UserDataManager.Instance.SsoToken })
         if (!data.isSucc) {
             // ToastManager.showToast('踢人失败 '+data?.err?.message);
-            ToastManager.showToast('踢人失败 ' + data.err.message);
+            ToastManager.showToast('踢人失败 ' + `${data.err.message}`);
             //刷新列表
             this.refreshMember();
             return;
         } else {
-            // ToastManager.showToast('成功踢出[' + name + ']');
             ToastManager.showToast(`成功踢出 [${name}]`);
         }
 
@@ -373,7 +371,7 @@ export class TeammembersRender extends Component {
         }
         const data = await TsRpc.Instance.Client.callApi('team/LeaveTeam', { __ssoToken: UserDataManager.Instance.SsoToken });
         if (!data.isSucc) {
-            ToastManager.showToast('退出队伍失败 ' + data.err.message);
+            ToastManager.showToast('退出队伍失败 ' + `${data.err.message}`);
             //TeamInfoManager.Instance.closeteam(false);
             return;
         }

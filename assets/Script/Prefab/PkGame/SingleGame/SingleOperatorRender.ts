@@ -138,6 +138,7 @@ export class SingleOperatorRender extends Component {
 
         let str = `任务${this.taskIndex + 1}:${this.curTaskNum}/${this.totalTaskNum}    剩余时间:${this.curCountdown >= 0 ? this.curCountdown : 0}`;
         this._taskLabel.string = str;
+        
 
     }
 

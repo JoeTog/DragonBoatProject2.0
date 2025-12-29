@@ -25,16 +25,24 @@ export class UseRender extends Component {
 
     renderOne(bagId: number) {
         const node = instantiate(this.userIcon);
+        const typeIcon =  node.getChildByName('bg');
+        const icon =  node.getChildByName('icon');
         const config = BAG_CONFIG[bagId];
-        // let icon_url = 'Texture/bag/icon/' + config[1] + '/spriteFrame'
-        // let icon_url = `Texture/bag/icon/${config[1]}/spriteFrame`;
+        
         let icon_urll = `Texture/2.0/5游戏商店/道具图片/112x114/${config[1]}/spriteFrame`;
         resAssetLoad<SpriteFrame>(icon_urll,SpriteFrame).then(res => {
-            node.getComponent(Sprite).spriteFrame = res;
+            icon.getComponent(Sprite).spriteFrame = res;
             this.containNode.addChild(node);
         }).catch((err) => {
-            console.log("icon加载失败: " + err);
-        })
+            console.log("icon加载失败icon_urll: " , err);
+        });
+        let icon_urltype = `Texture/2.0/6游戏背包/道具等级/${'普通助力器'}/spriteFrame`;
+        resAssetLoad<SpriteFrame>(icon_urltype,SpriteFrame).then(res => {
+            typeIcon.getComponent(Sprite).spriteFrame = res;
+        }).catch((err) => {
+            console.log("icon加载失败icon_urltype: " , err);
+        });
+
 
     }
 

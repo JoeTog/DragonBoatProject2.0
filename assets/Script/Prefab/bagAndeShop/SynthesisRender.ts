@@ -99,23 +99,21 @@ export class SynthesisRender extends Component {
         if (this.earnBageItemList.length == 2) {
             const itemFirst = this.earnBageItemList[0];
             const configFirst = BAG_CONFIG[itemFirst.id];
-            // let icon_urlFirst = 'Texture/2.0/5游戏商店/道具图片/112x114/' + configFirst[1] + '/spriteFrame';
             let icon_urlFirst = `Texture/2.0/5游戏商店/道具图片/112x114/${configFirst[1]}/spriteFrame`;
             resAssetLoad<SpriteFrame>(icon_urlFirst, SpriteFrame).then(res => {
                 this.earnIconFirst.getComponent(Sprite).spriteFrame = res;
             }).catch((err) => {
-                console.error("图标 加载失败: " + err);
+                console.error("图标 加载失败: " , err);
             });
             this.earnIconBageFirst.string = `x${itemFirst.count}`;
 
             const itemSec = this.earnBageItemList[1];
             const configSec = BAG_CONFIG[itemSec.id];
-            // let icon_urlSec = 'Texture/2.0/5游戏商店/道具图片/112x114/' + configSec[1] + '/spriteFrame';
             let icon_urlSec = `Texture/2.0/5游戏商店/道具图片/112x114/${configSec[1]}/spriteFrame`;
             resAssetLoad<SpriteFrame>(icon_urlSec, SpriteFrame).then(res => {
                 this.earnIconSec.getComponent(Sprite).spriteFrame = res;
             }).catch((err) => {
-                console.error("图标 加载失败: " + err);
+                console.error("图标 加载失败: " , err);
             });
             this.earnIconBageSec.string = `x${itemSec.count}`;
         }
@@ -124,23 +122,21 @@ export class SynthesisRender extends Component {
         if (this.depleteBageItemList.length == 2) {
             const itemFirst = this.depleteBageItemList[0];
             const configFirst = BAG_CONFIG[itemFirst.id];
-            // let icon_urlFirst = 'Texture/2.0/5游戏商店/道具图片/112x114/' + configFirst[1] + '/spriteFrame';
             let icon_urlFirst = `Texture/2.0/5游戏商店/道具图片/112x114/${configFirst[1]}/spriteFrame`;
             resAssetLoad<SpriteFrame>(icon_urlFirst, SpriteFrame).then(res => {
                 this.depleteIconFirst.getComponent(Sprite).spriteFrame = res;
             }).catch((err) => {
-                console.error("图标 加载失败: " + err);
+                console.error("图标 加载失败: " , err);
             });
             this.depleteBageFirst.string = `x${itemFirst.count}`;
 
             const itemSec = this.depleteBageItemList[1];
             const configSec = BAG_CONFIG[itemSec.id];
-            // let icon_urlSec = 'Texture/2.0/5游戏商店/道具图片/112x114/' + configSec[1] + '/spriteFrame';
             let icon_urlSec = `Texture/2.0/5游戏商店/道具图片/112x114/${configSec[1]}/spriteFrame`;
             resAssetLoad<SpriteFrame>(icon_urlSec, SpriteFrame).then(res => {
                 this.depleteIconSec.getComponent(Sprite).spriteFrame = res;
             }).catch((err) => {
-                console.error("图标 加载失败: " + err);
+                console.error("图标 加载失败: " , err);
             });
             this.depleteBageSec.string = `x${itemSec.count}`;
         }
@@ -153,18 +149,16 @@ export class SynthesisRender extends Component {
                 resAssetLoad<SpriteFrame>('', SpriteFrame).then(res => {
                     this.typeBg.getComponent(Sprite).spriteFrame = res;
                 }).catch((err) => {
-                    console.error("图标 加载失败: " + err);
+                    console.error("图标 加载失败: " , err);
                 });
             }
             //    //itemName iconShow deetailContentViewNode labelPrefab
             this.itemName.getComponent(Label).string = successGetItem.name;
-            //let iconurl = "Texture/bag/icon/" + config[1] + "/spriteFrame";
-            // let icon_url = 'Texture/2.0/5游戏商店/道具图片/330x336/' + configSuccessItem[1] + '/spriteFrame';
             let icon_url = `Texture/2.0/5游戏商店/道具图片/330x336/${configSuccessItem[1]}/spriteFrame`;
             resAssetLoad<SpriteFrame>(icon_url, SpriteFrame).then(res => {
                 this.iconShow.getComponent(Sprite).spriteFrame = res;
             }).catch((err) => {
-                console.error("图标 加载失败: " + err);
+                console.error("图标 加载失败: " , err);
             });
             const node = instantiate(this.labelPrefab);
             node.getComponent(Label).string = successGetItem.desc;

@@ -260,13 +260,11 @@ export class BagRender extends Component {
 
         const config = BAG_CONFIG[bagItem.id];
         this.itemName.getComponent(Label).string = bagItem.name;
-        //let iconurl = "Texture/bag/icon/" + config[1] + "/spriteFrame";
-        // let icon_url = 'Texture/2.0/5游戏商店/道具图片/330x336/' + config[1] + '/spriteFrame';
         let icon_url = `Texture/2.0/5游戏商店/道具图片/330x336/${config[1]}/spriteFrame`;
         resAssetLoad<SpriteFrame>(icon_url, SpriteFrame).then(res => {
             this.iconShow.getComponent(Sprite).spriteFrame = res;
         }).catch((err) => {
-            console.error("vip图标 加载失败: " + err);
+            console.error("vip图标 加载失败: " , err);
         });
         const node = instantiate(this.labelPrefab);
         node.getComponent(Label).string = bagItem.desc;

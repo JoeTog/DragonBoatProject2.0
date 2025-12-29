@@ -421,7 +421,6 @@ export class HomeManager extends Component {
                     return;
                 }
                 const errorMessage = data?.res?.error || "";
-                // ToastManager.showToast(errorMessage || "创建队伍失败" + data);
                 ToastManager.showToast(errorMessage || `创建队伍失败${data}`);
                 return;
             } else if (!data.isSucc) {
@@ -429,7 +428,6 @@ export class HomeManager extends Component {
                 if (errorMessage.length == 0) {
                     errorMessage = data?.err?.message || "";
                 }
-                // ToastManager.showToast(errorMessage || "创建队伍失败" + data)
                 ToastManager.showToast(errorMessage || `创建队伍失败${data}`);
                 return;
             }

@@ -420,7 +420,7 @@ export class OperatorRender extends Component {
             if (!data.isSucc) {
                 // 提示玩家已经死亡
                 console.error('后台返回AddPower失败！玩家淘汰 :', data);
-                ToastManager.showToast('后台返回淘汰:' + data.err.message);
+                ToastManager.showToast('后台返回淘汰:' + `${data.err.message}`);
                 // GameDataManager.Instance.dealRoomDie();
                 return;
             }else {

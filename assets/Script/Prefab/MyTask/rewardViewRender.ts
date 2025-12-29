@@ -24,12 +24,10 @@ export class rewardViewRender extends Component {
                 const iconItem = instantiate(this.iconItem);
                 const icon = iconItem.getChildByName('iconBg').getChildByName('icon').getComponent(Sprite);
                 const config = BAG_CONFIG[element.id];
-                // let icon_urll = 'Texture/2.0/5游戏商店/道具图片/112x114/' + config[1] + '/spriteFrame';
                 let icon_urll = `Texture/2.0/5游戏商店/道具图片/112x114/${config[1]}/spriteFrame`;
                 resAssetLoad<SpriteFrame>(icon_urll, SpriteFrame).then(res => {
                     icon.spriteFrame = res;
                 }).catch((err) => {
-                    // console.error("icon加载失败: " + err + 'id =' + element.id);
                     console.error(`icon加载失败:${err},id = ${element.id}`);
                 });
                 this.contentView.addChild(iconItem);

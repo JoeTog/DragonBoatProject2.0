@@ -70,7 +70,6 @@ export class bottomRender extends Component {
         const data = await TsRpc.Instance.Client.callApi('team/LeaveTeam', { __ssoToken: UserDataManager.Instance.SsoToken });
         if (!data.isSucc) {
             ToastManager.showToast('退出队伍失败 ' + data.err.message);
-            //TeamInfoManager.Instance.closeteam(false);
             return;
         }
     }
