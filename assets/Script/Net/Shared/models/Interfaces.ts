@@ -105,6 +105,8 @@ export interface IPlayer {
     total_exchanged_points?: number;
     /**是否已领取首次1万点券奖励(0=未领取,1=已领取) */
     first_10k_reward_claimed?: number;
+    /**最后阅读公告时间戳（秒） */
+    last_notice_read_time?: number;
 }
 
 export interface ITeamBase {

@@ -16,6 +16,8 @@ export class PopViewManager extends Component {
 
 
 
+    @property(Node)
+    titleNode: Node = null;
 
     @property(Prefab)
     itemPrefab: Prefab = null;
@@ -36,7 +38,7 @@ export class PopViewManager extends Component {
 
     public messageText: string = '';
     public _confirmText: string = '使用复活药水';
-    public _cancelText: string = '返回';
+    // public _cancelText: string = '返回';
 
     public showItemList: EnrichedBagItem[] = [];//背包合成
 

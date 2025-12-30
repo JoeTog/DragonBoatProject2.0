@@ -2,7 +2,7 @@ import { _decorator, Component, find, instantiate, Label, Node, Prefab, Progress
 import { TeamInfoManager } from '../../Data/TeamInfoManager';
 import EventManager from '../../Base/EventManager';
 import { EVENT_ENUM, GameStatus, MUSIC_PATH_ENUM, TaskType } from '../../Data/Enum';
-import { BigNumUtils, TimeDateUtils } from '../../Base/Utils';
+import { BigNumUtils, TimeDateUtils, truncateString, truncateStringCutIndex } from '../../Base/Utils';
 import UserDataManager from '../../Data/UserDataManager';
 import { GameDataManager } from '../../Data/GameDatamanager';
 import { TsRpc } from '../../Net/TsRpc';
@@ -20,7 +20,7 @@ export class UIRender extends Component {
     private countDownNode: Node = null;
     private teamPowerLabel: Label = null;
     private teamPowerProgress: ProgressBar = null;
-    private myPowerProgress: ProgressBar = null;
+    // private myPowerProgress: ProgressBar = null;
     private timeLabel: Label = null;
     private dieNode: Node = null;
     private myPowerLabel: Label = null;
@@ -28,10 +28,11 @@ export class UIRender extends Component {
     private enemyTeamPowerLabel: Label = null;
     private enemyTeamPowerProgress: ProgressBar = null;
 
-
-
     private _getGameTime: boolean = false;
     private _isRequestingConfig: boolean = false;
+
+    private infoNode: Node = null;
+    private infoMy: Node = null;
 
 
     protected onLoad(): void {
@@ -39,19 +40,19 @@ export class UIRender extends Component {
         this.countDownNode = this.node.getChildByName('countdown');
         this.dieNode = this.node.getChildByName('die');
 
-        const infoNode = this.node.getChildByName('head').getChildByName('Info');
+        this.infoNode = this.node.getChildByName('head').getChildByName('Info');
         console.log('子节点列表:', this.node.children)
-        this.timeLabel = infoNode.getChildByName('time').getComponent(Label);
-        const infoMy = infoNode.getChildByName('myTeam');
-        this.teamPowerLabel = infoMy.getChildByName('myTeamPower').getComponent(Label);
-        this.teamPowerProgress = infoMy.getChildByName('ProgressBar').getComponent(ProgressBar);
-        const teamNameLabel = infoMy.getChildByName('teamName').getComponent(Label);
-        this.myPowerLabel = infoMy.getChildByName('myPower').getComponent(Label);
+        this.timeLabel = this.infoNode.getChildByName('time').getComponent(Label);
+        this.infoMy = this.infoNode.getChildByName('myTeam');
+        this.teamPowerLabel = this.infoMy.getChildByName('myTeamPower').getComponent(Label);
+        this.teamPowerProgress = this.infoMy.getChildByName('ProgressBar').getComponent(ProgressBar);
+        const teamNameLabel = this.infoMy.getChildByName('teamName').getComponent(Label);
+        this.myPowerLabel = this.infoMy.getChildByName('myPower').getComponent(Label);
         // this.myPowerProgress = infoMy.getChildByName('ProgressBar').getComponent(ProgressBar);
         //新增 我的武力值
 
 
-        const infoEnemy = infoNode.getChildByName('emenyTeam');
+        const infoEnemy = this.infoNode.getChildByName('emenyTeam');
         this.enemyTeamPowerLabel = infoEnemy.getChildByName('myTeamPower').getComponent(Label);
         //新增
         const enemyTeamNameLabel = infoEnemy.getChildByName('teamName').getComponent(Label);
@@ -61,6 +62,8 @@ export class UIRender extends Component {
         teamNameLabel.string = TeamInfoManager.Instance.TeamInfo.name;
         if (VsTeamInfoArr.length == 2) {
             enemyTeamNameLabel.string = VsTeamInfoArr[GameDataManager.Instance.EnemyTeamIndex].name;
+            enemyTeamNameLabel.string = truncateStringCutIndex(VsTeamInfoArr[GameDataManager.Instance.EnemyTeamIndex].name, 7);
+
         }
         EventManager.Instance.on(EVENT_ENUM.UpdateGameInfoByNetGameTime, this.doRender, this);
         EventManager.Instance.on(EVENT_ENUM.RenderGameCountDown, this.renderGameCountDown, this);
@@ -80,16 +83,16 @@ export class UIRender extends Component {
                         if (GameDataManager.Instance.TaskType == TaskType.active) {
                             return;
                         }
-                        console.warn('show popview');
-                        if (!find('Canvas/PkGame')?.getChildByName('PkResult') && !find('Canvas/PkGame')?.getChildByName('PkResultSuccess') || !find('Canvas/PkGame')?.getChildByName('UI')?.getChildByName('PopView')) {
+                        console.warn('show popview 111');
+                        if (!find('Canvas/PkGame')?.getChildByName('PkResult') && !find('Canvas/PkGame')?.getChildByName('PkResultSuccess') && !find('Canvas/PkGame')?.getChildByName('UI')?.getChildByName('PopView')) {
+                            console.warn('show popview 222');
+                            this.showHomeAbout();
                             const popV = instantiate(this.popViewPrefab);
                             const manager = popV.getComponent(PopViewManager);
                             manager.messageText = '游戏已结束，是否返回?';
-                            manager._confirmText = '取消';
+                            manager._confirmText = '返回';
+                            manager.titleNode.active = false;
                             manager.confirmBlock = async () => {
-                                popV.destroy();
-                            };
-                            manager.cancelBlock = async () => {
                                 popV.destroy();
                                 GameDataManager.Instance._reset();
                                 EventManager.Instance.emit(EVENT_ENUM.HidePkGame);
@@ -97,6 +100,10 @@ export class UIRender extends Component {
                                 AudioBGMManager.Instance.play(MUSIC_PATH_ENUM.bgFight).catch(err => {
                                     console.warn('播放背景音乐失败:', err);
                                 });
+                            };
+                            manager.cancelBlock = async () => {
+                                popV.destroy();
+
                             };
                             this.node.addChild(popV);
                         }
@@ -157,7 +164,44 @@ export class UIRender extends Component {
         this.enemyTeamPowerLabel.string = BigNumUtils.getNumberStringWan(enemyPower);
         //更新自己的进度条
         let myProgress = myPowerCur / UserDataManager.Instance.UserInfo.power;
-        // this.myPowerProgress.progress = isNaN(myProgress)?0:myProgress;
+        const progressMe = isNaN(myProgress) ? 0 : myProgress;
+        console.log('progressMe = ', progressMe);
+        if (progressMe >= 0.99) {
+            const first = this.infoMy.getChildByName('power').getChildByName('first');
+            const sec = this.infoMy.getChildByName('power').getChildByName('sec');
+            const third = this.infoMy.getChildByName('power').getChildByName('three');
+            const fouth = this.infoMy.getChildByName('power').getChildByName('fouth');
+            const fifth = this.infoMy.getChildByName('power').getChildByName('fifth');
+            first.active = true;
+            sec.active = true;
+            third.active = true;
+            fouth.active = true;
+            fifth.active = true;
+        } else if (progressMe >= 0.79) {
+            const first = this.infoMy.getChildByName('power').getChildByName('first');
+            const sec = this.infoMy.getChildByName('power').getChildByName('sec');
+            const third = this.infoMy.getChildByName('power').getChildByName('three');
+            const fouth = this.infoMy.getChildByName('power').getChildByName('fouth');
+            first.active = true;
+            sec.active = true;
+            third.active = true;
+            fouth.active = true;
+        } else if (progressMe >= 0.59) {
+            const first = this.infoMy.getChildByName('power').getChildByName('first');
+            const sec = this.infoMy.getChildByName('power').getChildByName('sec');
+            const third = this.infoMy.getChildByName('power').getChildByName('three');
+            first.active = true;
+            sec.active = true;
+            third.active = true;
+        } else if (progressMe >= 0.39) {
+            const first = this.infoMy.getChildByName('power').getChildByName('first');
+            const sec = this.infoMy.getChildByName('power').getChildByName('sec');
+            first.active = true;
+            sec.active = true;
+        } else if (progressMe >= 0.19) {
+            const first = this.infoMy.getChildByName('power').getChildByName('first');
+            first.active = true;
+        }
         // console.log('myPowerProgress = ',this.myPowerProgress.progress);
         //更新时间
         let match_time = TimeDateUtils.formatTimeInterval(time, true, false);
@@ -172,7 +216,15 @@ export class UIRender extends Component {
     }
 
 
-
+    showHomeAbout() {
+        GameDataManager.Instance.setInGameUI(false);
+        //通知home首页 重新渲染 第二个参数是判断是否需要登陆
+        EventManager.Instance.emit(EVENT_ENUM.ShowHome, true);
+        // 增加刷新usercard信息 在ShowHome中 请求到用户信息了 发送通知
+        // EventManager.Instance.emit(EVENT_ENUM.UpdateUserInfo);
+        // 重新渲染队伍信息和首页 主要是为了更新队伍信息
+        EventManager.Instance.emit(EVENT_ENUM.ToCreateTeam, false);
+    }
 
 
 

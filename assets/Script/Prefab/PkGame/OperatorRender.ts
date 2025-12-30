@@ -1,4 +1,4 @@
-import { _decorator, BlockInputEvents, Button, Component, director, EventTouch, Label, Node, Tween, tween, UIOpacity, Vec2 } from 'cc';
+import { _decorator, BlockInputEvents, Button, Component, director, EventTouch, find, Label, Node, Tween, tween, UIOpacity, Vec2 } from 'cc';
 import UserDataManager from '../../Data/UserDataManager';
 import EventManager from '../../Base/EventManager';
 import { EVENT_ENUM, GameStatus, TaskType } from '../../Data/Enum';
@@ -235,7 +235,7 @@ export class OperatorRender extends Component {
     }
 
     offSlidingAreaNodeTouch() {
-        
+
         if (this._slidingAreaNode && this._slidingAreaNode.isValid) {
             this._slidingAreaNode.off(Node.EventType.TOUCH_START, this.onTouchStart, this);
             this._slidingAreaNode.off(Node.EventType.TOUCH_END, this.onTouchEnd, this);
@@ -245,7 +245,7 @@ export class OperatorRender extends Component {
     }
 
     onSlidingAreaNodeTouch() {
-        
+
         if (this._slidingAreaNode && this._slidingAreaNode.isValid) {
             this._slidingAreaNode.on(Node.EventType.TOUCH_START, this.onTouchStart, this);
             this._slidingAreaNode.on(Node.EventType.TOUCH_END, this.onTouchEnd, this);
@@ -423,7 +423,7 @@ export class OperatorRender extends Component {
                 ToastManager.showToast('后台返回淘汰:' + `${data.err.message}`);
                 // GameDataManager.Instance.dealRoomDie();
                 return;
-            }else {
+            } else {
                 if (data.res.value && data.res.value == 0) {
                     //addpower失败了,请求当前状态,
                     this.checkStatus();
@@ -437,14 +437,20 @@ export class OperatorRender extends Component {
     private async checkStatus() {
         const pk_info = await TsRpc.Instance.Client.callApi("room/GetRoomInfo", { __ssoToken: UserDataManager.Instance.SsoToken });
         console.log('检查 pk_info = ', pk_info);
-        if (pk_info.isSucc && pk_info.res?.currentTask?.status === 'eliminated' && GameDataManager.Instance.TaskType != TaskType.failed) {
-            GameDataManager.Instance.dealRoomDie();
-            if (pk_info.res.currentTask) {
-                GameDataManager.Instance.dealTaskCountDown(pk_info.res.currentTask);
+        // if (pk_info.isSucc && pk_info.res?.currentTask?.status === 'eliminated' && GameDataManager.Instance.TaskType != TaskType.failed) {
+        if (pk_info.isSucc && pk_info.res?.currentTask?.status === 'eliminated') {
+            if (!find('Canvas/PkGame')?.getChildByName('UI')?.getChildByName('die')) {
+                console.warn('checkStatus - dealRoomDie !!!find');
+                GameDataManager.Instance.dealRoomDie();
+                if (pk_info.res.currentTask) {
+                    GameDataManager.Instance.dealTaskCountDown(pk_info.res.currentTask);
+                }
+            }else{
+                console.warn('checkStatus - dealRoomDie find');
             }
         } else if (pk_info.isSucc) {
             GameDataManager.Instance.setGameStatus(GameStatus.NORMAL);
-        }else if (!pk_info.isSucc && pk_info.err.message.includes('未找到玩家或玩家未在队伍中')) {
+        } else if (!pk_info.isSucc && pk_info.err.message.includes('未找到玩家或玩家未在队伍中')) {
             GameDataManager.Instance.setGameStatus(GameStatus.NORMAL);
         }
         else if (!pk_info.isSucc && pk_info.err.message.includes('WebSocket is not connected')) {
@@ -529,8 +535,8 @@ export class OperatorRender extends Component {
                 nodee.active = true;
 
                 if (nodeIndex != 0) {
-                    
-        this.offSlidingAreaNodeTouch();
+
+                    this.offSlidingAreaNodeTouch();
 
                     let dir = this._slideDirection;
                     let opacity = uiOpacity;
@@ -540,7 +546,7 @@ export class OperatorRender extends Component {
                         .to(0.02, { opacity: 255 })
                         .call(() => {
 
-        this.onSlidingAreaNodeTouch();
+                            this.onSlidingAreaNodeTouch();
 
 
                             //修复绿色箭头

@@ -13,10 +13,8 @@ import { MsgTaskStart } from './room/MsgTaskStart';
 import { ReqAddPower, ResAddPower } from './room/PtlAddPower';
 import { ReqGetRoomInfo, ResGetRoomInfo } from './room/PtlGetRoomInfo';
 import { ReqBuyItem, ResBuyItem } from './shop/PtlBuyItem';
-import { ReqDoSynthesis, ResDoSynthesis } from './shop/PtlDoSynthesis';
 import { ReqExchangePoint, ResExchangePoint } from './shop/PtlExchangePoint';
 import { ReqGetItemList, ResGetItemList } from './shop/PtlGetItemList';
-import { ReqGetSynthesisRecipe, ResGetSynthesisRecipe } from './shop/PtlGetSynthesisRecipe';
 import { ReqMergeItem, ResMergeItem } from './shop/PtlMergeItem';
 import { ReqUseItem, ResUseItem } from './shop/PtlUseItem';
 import { MsgMatchFail } from './team/MsgMatchFail';
@@ -40,6 +38,7 @@ import { ReqLeaveTeam, ResLeaveTeam } from './team/PtlLeaveTeam';
 import { ReqMatching, ResMatching } from './team/PtlMatching';
 import { MsgLuckyBagRes } from './user/MsgLuckyBagRes';
 import { ReqChecktoken, ResChecktoken } from './user/PtlChecktoken';
+import { ReqGetCaptainMatchCount, ResGetCaptainMatchCount } from './user/PtlGetCaptainMatchCount';
 import { ReqGetEliminationRecords, ResGetEliminationRecords } from './user/PtlGetEliminationRecords';
 import { ReqGetGameRecord, ResGetGameRecord } from './user/PtlGetGameRecord';
 import { ReqGetInfo, ResGetInfo } from './user/PtlGetInfo';
@@ -47,6 +46,7 @@ import { ReqGetPowerRecord, ResGetPowerRecord } from './user/PtlGetPowerRecord';
 import { ReqGetStatus, ResGetStatus } from './user/PtlGetStatus';
 import { ReqGetTaskMessages, ResGetTaskMessages } from './user/PtlGetTaskMessages';
 import { ReqLogin, ResLogin } from './user/PtlLogin';
+import { ReqMarkNoticeRead, ResMarkNoticeRead } from './user/PtlMarkNoticeRead';
 import { ReqMarkTaskMessagesRead, ResMarkTaskMessagesRead } from './user/PtlMarkTaskMessagesRead';
 import { ReqReadTaskMessage, ResReadTaskMessage } from './user/PtlReadTaskMessage';
 import { ReqSubmitFeedback, ResSubmitFeedback } from './user/PtlSubmitFeedback';
@@ -74,10 +74,6 @@ export interface ServiceType {
             req: ReqBuyItem,
             res: ResBuyItem
         },
-        "shop/DoSynthesis": {
-            req: ReqDoSynthesis,
-            res: ResDoSynthesis
-        },
         "shop/ExchangePoint": {
             req: ReqExchangePoint,
             res: ResExchangePoint
@@ -85,10 +81,6 @@ export interface ServiceType {
         "shop/GetItemList": {
             req: ReqGetItemList,
             res: ResGetItemList
-        },
-        "shop/GetSynthesisRecipe": {
-            req: ReqGetSynthesisRecipe,
-            res: ResGetSynthesisRecipe
         },
         "shop/MergeItem": {
             req: ReqMergeItem,
@@ -138,6 +130,10 @@ export interface ServiceType {
             req: ReqChecktoken,
             res: ResChecktoken
         },
+        "user/GetCaptainMatchCount": {
+            req: ReqGetCaptainMatchCount,
+            res: ResGetCaptainMatchCount
+        },
         "user/GetEliminationRecords": {
             req: ReqGetEliminationRecords,
             res: ResGetEliminationRecords
@@ -165,6 +161,10 @@ export interface ServiceType {
         "user/Login": {
             req: ReqLogin,
             res: ResLogin
+        },
+        "user/MarkNoticeRead": {
+            req: ReqMarkNoticeRead,
+            res: ResMarkNoticeRead
         },
         "user/MarkTaskMessagesRead": {
             req: ReqMarkTaskMessagesRead,
@@ -208,7 +208,7 @@ export interface ServiceType {
 }
 
 export const serviceProto: ServiceProto<ServiceType> = {
-    "version": 22,
+    "version": 26,
     "services": [
         {
             "id": 0,
@@ -294,11 +294,6 @@ export const serviceProto: ServiceProto<ServiceType> = {
             }
         },
         {
-            "id": 50,
-            "name": "shop/DoSynthesis",
-            "type": "api"
-        },
-        {
             "id": 14,
             "name": "shop/ExchangePoint",
             "type": "api",
@@ -313,11 +308,6 @@ export const serviceProto: ServiceProto<ServiceType> = {
             "conf": {
                 "needLogin": true
             }
-        },
-        {
-            "id": 51,
-            "name": "shop/GetSynthesisRecipe",
-            "type": "api"
         },
         {
             "id": 16,
@@ -467,6 +457,14 @@ export const serviceProto: ServiceProto<ServiceType> = {
             "conf": {}
         },
         {
+            "id": 58,
+            "name": "user/GetCaptainMatchCount",
+            "type": "api",
+            "conf": {
+                "needLogin": true
+            }
+        },
+        {
             "id": 39,
             "name": "user/GetEliminationRecords",
             "type": "api",
@@ -519,6 +517,14 @@ export const serviceProto: ServiceProto<ServiceType> = {
             "name": "user/Login",
             "type": "api",
             "conf": {}
+        },
+        {
+            "id": 59,
+            "name": "user/MarkNoticeRead",
+            "type": "api",
+            "conf": {
+                "needLogin": true
+            }
         },
         {
             "id": 46,
@@ -1818,6 +1824,14 @@ export const serviceProto: ServiceProto<ServiceType> = {
                         "type": "Number"
                     },
                     "optional": true
+                },
+                {
+                    "id": 22,
+                    "name": "last_notice_read_time",
+                    "type": {
+                        "type": "Number"
+                    },
+                    "optional": true
                 }
             ]
         },
@@ -1993,71 +2007,6 @@ export const serviceProto: ServiceProto<ServiceType> = {
                 }
             ]
         },
-        "shop/PtlDoSynthesis/ReqDoSynthesis": {
-            "type": "Interface",
-            "properties": [
-                {
-                    "id": 0,
-                    "name": "targetItemId",
-                    "type": {
-                        "type": "Number"
-                    }
-                }
-            ]
-        },
-        "shop/PtlDoSynthesis/ResDoSynthesis": {
-            "type": "Interface",
-            "properties": [
-                {
-                    "id": 0,
-                    "name": "success",
-                    "type": {
-                        "type": "Boolean"
-                    }
-                },
-                {
-                    "id": 1,
-                    "name": "resultItem",
-                    "type": {
-                        "type": "Reference",
-                        "target": "shop/PtlDoSynthesis/ResSynthesisResult"
-                    }
-                },
-                {
-                    "id": 2,
-                    "name": "msg",
-                    "type": {
-                        "type": "String"
-                    }
-                }
-            ]
-        },
-        "shop/PtlDoSynthesis/ResSynthesisResult": {
-            "type": "Interface",
-            "properties": [
-                {
-                    "id": 0,
-                    "name": "itemId",
-                    "type": {
-                        "type": "Number"
-                    }
-                },
-                {
-                    "id": 1,
-                    "name": "itemName",
-                    "type": {
-                        "type": "String"
-                    }
-                },
-                {
-                    "id": 2,
-                    "name": "count",
-                    "type": {
-                        "type": "Number"
-                    }
-                }
-            ]
-        },
         "shop/PtlExchangePoint/ReqExchangePoint": {
             "type": "Interface",
             "extends": [
@@ -2199,137 +2148,6 @@ export const serviceProto: ServiceProto<ServiceType> = {
                 {
                     "id": 5,
                     "name": "status",
-                    "type": {
-                        "type": "Number"
-                    }
-                }
-            ]
-        },
-        "shop/PtlGetSynthesisRecipe/ReqGetSynthesisRecipe": {
-            "type": "Interface",
-            "properties": [
-                {
-                    "id": 0,
-                    "name": "targetItemId",
-                    "type": {
-                        "type": "Number"
-                    }
-                }
-            ]
-        },
-        "shop/PtlGetSynthesisRecipe/ResGetSynthesisRecipe": {
-            "type": "Interface",
-            "properties": [
-                {
-                    "id": 0,
-                    "name": "canSynthesize",
-                    "type": {
-                        "type": "Boolean"
-                    }
-                },
-                {
-                    "id": 1,
-                    "name": "recipe",
-                    "type": {
-                        "type": "Reference",
-                        "target": "shop/PtlGetSynthesisRecipe/SynthesisRecipe"
-                    },
-                    "optional": true
-                },
-                {
-                    "id": 2,
-                    "name": "msg",
-                    "type": {
-                        "type": "String"
-                    },
-                    "optional": true
-                }
-            ]
-        },
-        "shop/PtlGetSynthesisRecipe/SynthesisRecipe": {
-            "type": "Interface",
-            "properties": [
-                {
-                    "id": 0,
-                    "name": "materials",
-                    "type": {
-                        "type": "Array",
-                        "elementType": {
-                            "type": "Reference",
-                            "target": "shop/PtlGetSynthesisRecipe/SynthesisMaterial"
-                        }
-                    }
-                },
-                {
-                    "id": 1,
-                    "name": "resultItem",
-                    "type": {
-                        "type": "Reference",
-                        "target": "shop/PtlGetSynthesisRecipe/SynthesisResultItem"
-                    }
-                },
-                {
-                    "id": 2,
-                    "name": "successRate",
-                    "type": {
-                        "type": "Number"
-                    }
-                }
-            ]
-        },
-        "shop/PtlGetSynthesisRecipe/SynthesisMaterial": {
-            "type": "Interface",
-            "properties": [
-                {
-                    "id": 0,
-                    "name": "itemId",
-                    "type": {
-                        "type": "Number"
-                    }
-                },
-                {
-                    "id": 1,
-                    "name": "itemName",
-                    "type": {
-                        "type": "String"
-                    }
-                },
-                {
-                    "id": 2,
-                    "name": "count",
-                    "type": {
-                        "type": "Number"
-                    }
-                },
-                {
-                    "id": 3,
-                    "name": "owned",
-                    "type": {
-                        "type": "Number"
-                    }
-                }
-            ]
-        },
-        "shop/PtlGetSynthesisRecipe/SynthesisResultItem": {
-            "type": "Interface",
-            "properties": [
-                {
-                    "id": 0,
-                    "name": "itemId",
-                    "type": {
-                        "type": "Number"
-                    }
-                },
-                {
-                    "id": 1,
-                    "name": "itemName",
-                    "type": {
-                        "type": "String"
-                    }
-                },
-                {
-                    "id": 2,
-                    "name": "count",
                     "type": {
                         "type": "Number"
                     }
@@ -3086,6 +2904,56 @@ export const serviceProto: ServiceProto<ServiceType> = {
                     "name": "result",
                     "type": {
                         "type": "Boolean"
+                    }
+                }
+            ]
+        },
+        "user/PtlGetCaptainMatchCount/ReqGetCaptainMatchCount": {
+            "type": "Interface",
+            "extends": [
+                {
+                    "id": 0,
+                    "type": {
+                        "type": "Reference",
+                        "target": "base/BaseRequest"
+                    }
+                }
+            ],
+            "properties": [
+                {
+                    "id": 0,
+                    "name": "version",
+                    "type": {
+                        "type": "String"
+                    },
+                    "optional": true
+                }
+            ]
+        },
+        "user/PtlGetCaptainMatchCount/ResGetCaptainMatchCount": {
+            "type": "Interface",
+            "extends": [
+                {
+                    "id": 0,
+                    "type": {
+                        "type": "Reference",
+                        "target": "base/BaseResponse"
+                    }
+                }
+            ],
+            "properties": [
+                {
+                    "id": 0,
+                    "name": "matchCount",
+                    "type": {
+                        "type": "Number"
+                    }
+                },
+                {
+                    "id": 1,
+                    "name": "version",
+                    "type": {
+                        "type": "String"
                     }
                 }
             ]
@@ -4164,6 +4032,30 @@ export const serviceProto: ServiceProto<ServiceType> = {
                     "name": "__ssoToken",
                     "type": {
                         "type": "String"
+                    }
+                }
+            ]
+        },
+        "user/PtlMarkNoticeRead/ReqMarkNoticeRead": {
+            "type": "Interface",
+            "extends": [
+                {
+                    "id": 0,
+                    "type": {
+                        "type": "Reference",
+                        "target": "base/BaseRequest"
+                    }
+                }
+            ]
+        },
+        "user/PtlMarkNoticeRead/ResMarkNoticeRead": {
+            "type": "Interface",
+            "extends": [
+                {
+                    "id": 0,
+                    "type": {
+                        "type": "Reference",
+                        "target": "base/BaseResponse"
                     }
                 }
             ]
